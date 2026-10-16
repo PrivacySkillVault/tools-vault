@@ -1,0 +1,10 @@
+"use strict";
+const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const js = fs.readFileSync("docs/javascripts/tools.js","utf8");
+const advanced = fs.readFileSync("docs/javascripts/tools-advanced.js","utf8");
+assert.match(js, /psv-tools-app/);
+assert.match(advanced, /CVSS v3\.1/);
+assert.match(advanced, /internetdb\.shodan\.io/);
+assert.match(advanced, /document\$\?\.subscribe/);
+console.log("PSV tools smoke tests passed.");
