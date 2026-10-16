@@ -1,14 +1,7 @@
-# -----------------------------------------------------------------------------
-# Privacy Skill Vault - Learn Platform Configuration
-# Reference Implementation: learn-vault (Phase 5B Refined)
-# -----------------------------------------------------------------------------
-
 site_name: "Privacy Skill Vault"
 site_url: "https://tools.privacyskillvault.com/"
-site_description: "Cybersecurity and Privacy Documentation"
+site_description: "Privacy-first browser-based SOC and blue-team utilities"
 site_author: "Privacy Skill Vault"
-
-# Theme Configuration
 theme:
   name: material
   custom_dir: docs/overrides
@@ -16,7 +9,6 @@ theme:
   language: en
   favicon: assets/branding/favicon.ico
   palette:
-    # Light Mode
     - media: "(prefers-color-scheme: light)"
       scheme: default
       primary: slate
@@ -24,7 +16,6 @@ theme:
       toggle:
         icon: material/brightness-7
         name: "Switch to dark mode"
-    # Dark Mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
       primary: slate
@@ -38,20 +29,15 @@ theme:
     - navigation.top
     - content.code.copy
     - content.action.view
-
-# Custom Styling Layer (PSV Design System + Phase 5B Navigation)
 extra_css:
   - stylesheets/extra.css
-
-# Markdown Extensions
+  - stylesheets/tools.css
+extra_javascript:
+  - javascripts/tools.js
 markdown_extensions:
   - admonition
   - pymdownx.details
-  - pymdownx.superfences:
-      custom_fences:
-        - name: mermaid
-          class: mermaid
-          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.superfences
   - pymdownx.highlight:
       anchor_linenums: true
       line_spans: __span
@@ -66,7 +52,5 @@ markdown_extensions:
   - md_in_html
   - toc:
       permalink: true
-
-# Navigation Architecture (Phase 5B Exact 5-Item Navigation)
 nav:
-  - "Home": "index.md"
+  - "Tools": "index.md"
