@@ -250,3 +250,81 @@ function lintYara(){const name=$("#yara-name")?.value.trim()||"",raw=$("#yara-st
 function install(){const app=$("#psv-tools-app");if(!app||app.dataset.finalSigmaYara)return;app.dataset.finalSigmaYara="1";const siem=$("#panel-siem"),yara=$("#panel-yara");if(siem){const box=document.createElement("div");box.className="psv-template-list";presets.forEach(([name,rule])=>{const b=document.createElement("button");b.type="button";b.className="psv-btn";b.textContent=name;b.addEventListener("click",()=>{$("#siem-fields").value=rule;runSigma()});box.append(b)});siem.querySelector(".psv-panel-head")?.after(box)}if(yara){let status=$("#yara-live-lint");if(!status){status=document.createElement("pre");status.id="yara-live-lint";status.className="psv-lint-status";yara.querySelector(".psv-panel-head")?.after(status)}const box=document.createElement("div");box.className="psv-template-list";[["PE header","pe"],["File size limit","size"],["String modifiers","mods"]].forEach(([label,value])=>{const b=document.createElement("button");b.type="button";b.className="psv-btn";b.textContent=label;b.addEventListener("click",()=>{if(value==="mods"){const e=$("#yara-strings");if(e)e.value=(e.value+"\n$sample = \"sample\" nocase wide ascii fullword xor").trim()}else{$("#yara-condition").value=value}lintYara()});box.append(b)});yara.querySelector(".psv-panel-head")?.after(box);yara.addEventListener("input",e=>{if(e.target.matches("#yara-name,#yara-strings,#yara-condition"))lintYara()})}document.addEventListener("click",e=>{const b=e.target.closest("button[data-action='run']");if(!b)return;const p=b.closest(".psv-tool-panel");if(p?.id==="panel-siem"){e.preventDefault();e.stopImmediatePropagation();runSigma()}if(p?.id==="panel-yara"){e.preventDefault();e.stopImmediatePropagation();const r=lintYara();write((r.issues.length?"Lint findings:\n- "+r.issues.join("\n- ")+"\n\n":"Lint passed for supported subset.\n\n")+r.rule+"\n\nValidate with the official YARA parser before deployment.")}},true);lintYara()}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",install,{once:true});else install();if(window.document$?.subscribe)window.document$.subscribe(()=>{const a=$("#psv-tools-app");if(a)a.dataset.finalSigmaYara="";install()});
 })();
+
+/* Application workbench layout and in-page multi-source threat intelligence. */
+(function(){
+"use strict";
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const txt=v=>v===undefined||v===null||v===""?"Not reported":String(v);
+const fetchJson=async(url,headers={})=>{const r=await fetch(url,{headers,mode:"cors",credentials:"omit"});if(!r.ok)throw Error("HTTP "+r.status);return r.json()};
+function init(){
+ const app=$("#psv-tools-app"),root=$(".psv-console",app),grid=$("#psv-tool-grid",app),search=$(".psv-search-wrap",app),workspace=$("#psv-workspace",app);
+ if(!app||!root||!grid||!workspace||app.dataset.psvAppLayout==="1")return;
+ app.dataset.psvAppLayout="1";
+ $("#psv-theme",app)?.remove();$$("#psv-tools-app .psv-footnote").forEach(e=>e.remove());
+ const layout=document.createElement("div");layout.className="psv-app-layout";
+ const rail=document.createElement("aside");rail.className="psv-tool-rail";rail.setAttribute("aria-label","Tool selector");
+ const main=document.createElement("main");main.className="psv-workspace-main";main.id="tool-workspace";main.tabIndex=-1;
+ const empty=document.createElement("div");empty.className="psv-workspace-empty";empty.id="psv-workspace-empty";empty.innerHTML="<strong>Select a tool to begin.</strong><p>Choose a utility from the left. Its workspace opens here.</p>";
+ search?.remove();grid.remove();workspace.remove();if(search)rail.append(search);rail.append(grid);main.append(empty,workspace);layout.append(rail,main);
+ const hero=$(".psv-hero",root);if(hero)hero.after(layout);else root.append(layout);
+ const footer=document.createElement("footer");footer.className="psv-app-footer";footer.innerHTML="<span>PRIVACY SKILL VAULT · CLIENT-SIDE WORKBENCH</span><span>Local-first where possible · Validate outputs before operational use.</span>";layout.after(footer);
+ $$(".psv-tool-card",grid).forEach(b=>{b.type="button";b.dataset.toolId=b.dataset.tool||"";b.setAttribute("aria-controls","panel-"+b.dataset.toolId)});
+ const open=id=>{const p=$("#panel-"+CSS.escape(id),workspace);if(!p)return;$$(".psv-tool-panel",workspace).forEach(x=>x.hidden=x!==p);empty.hidden=true;$$(".psv-tool-card",grid).forEach(b=>{const active=b.dataset.toolId===id;b.classList.toggle("is-active",active);b.setAttribute("aria-current",active?"page":"false")});main.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"})};
+ document.addEventListener("click",e=>{
+  const card=e.target.closest("#psv-tool-grid button[data-tool-id]");
+  if(card){e.preventDefault();e.stopImmediatePropagation();open(card.dataset.toolId);return}
+  const back=e.target.closest("#tool-workspace button[data-action='back']");
+  if(back){e.preventDefault();e.stopImmediatePropagation();$$(".psv-tool-panel",workspace).forEach(x=>x.hidden=true);empty.hidden=false;$$(".psv-tool-card",grid).forEach(b=>{b.classList.remove("is-active");b.setAttribute("aria-current","false")});main.scrollIntoView({behavior:"smooth",block:"start"})}
+ },true);
+ $("#psv-search",app)?.addEventListener("input",e=>{const q=e.target.value.toLowerCase();$$(".psv-tool-card",grid).forEach(b=>b.hidden=!b.textContent.toLowerCase().includes(q))});
+ const admonitions=$$(".md-typeset .admonition");admonitions.forEach(e=>{if(/Privacy-first by default|Operational use/i.test(e.textContent))e.remove()});
+ installIntel($("#panel-intel",workspace));
+}
+function installIntel(panel){
+ const input=$("#intel-indicator",panel),links=$("#intel-links",panel);if(!input||!links||panel.dataset.psvUnifiedIntel==="1")return;panel.dataset.psvUnifiedIntel="1";
+ const button=$$("button",panel).find(b=>/prepare lookup links/i.test(b.textContent));if(button){button.textContent="Analyze indicator";button.dataset.psvAnalyze="1"}
+ const keys=document.createElement("div");keys.className="psv-intel-key-row";keys.innerHTML='<label class="psv-field">Optional VirusTotal API key (memory only)<input id="psv-vt-key" type="password" autocomplete="off" placeholder="Optional; not saved"></label><label class="psv-field">Optional AbuseIPDB API key (memory only)<input id="psv-abuse-key" type="password" autocomplete="off" placeholder="Optional; not saved"></label>';
+ links.replaceChildren(keys);
+ const report=document.createElement("div");report.id="psv-unified-intel-report";report.className="psv-intel-dashboard";report.setAttribute("aria-live","polite");links.after(report);
+ const card=(title,body)=>'<section class="psv-intel-section"><h3>'+esc(title)+'</h3>'+body+'</section>';
+ const kv=obj=>'<dl class="psv-intel-kv">'+Object.entries(obj).map(([k,v])=>'<div><dt>'+esc(k)+'</dt><dd>'+esc(txt(v))+'</dd></div>').join("")+'</dl>';
+ const table=(heads,rows)=>'<div class="psv-intel-table-wrap"><table class="psv-intel-table"><thead><tr>'+heads.map(x=>'<th>'+esc(x)+'</th>').join("")+'</tr></thead><tbody>'+(rows.length?rows.map(row=>'<tr>'+row.map(x=>'<td>'+esc(txt(x))+'</td>').join("")+'</tr>').join(""):'<tr><td colspan="'+heads.length+'">No records returned.</td></tr>')+'</tbody></table></div>';
+ const get=async(label,fn)=>{try{return{label,data:await fn()}}catch(e){return{label,error:e.message}}};
+ const run=async()=>{
+  const indicator=input.value.trim().replace(/^https?:\/\//i,"").split("/")[0].replace(/\.$/,"");
+  const ip4=/^(?:\d{1,3}\.){3}\d{1,3}$/.test(indicator)&&indicator.split(".").every(n=>+n<=255),ip6=/^(?=.*:)[0-9a-f:]+$/i.test(indicator),isIp=ip4||ip6;
+  const domain=/^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/i.test(indicator),hash=/^(?:[a-f0-9]{32}|[a-f0-9]{40}|[a-f0-9]{64})$/i.test(indicator);
+  if(!isIp&&!domain&&!hash){report.innerHTML='<p class="psv-intel-note">Enter a valid IPv4/IPv6 address, fully qualified domain, or MD5/SHA-1/SHA-256 hash.</p>';return}
+  report.innerHTML='<p class="psv-intel-note">Fetching public intelligence sources. Provider errors and missing data will be shown explicitly.</p>';
+  const jobs=[];
+  if(isIp){jobs.push(get("IP geolocation",()=>fetchJson("https://ipwho.is/"+encodeURIComponent(indicator))));jobs.push(get("RDAP",()=>fetchJson("https://rdap.org/ip/"+encodeURIComponent(indicator))));jobs.push(get("Shodan InternetDB",()=>fetchJson("https://internetdb.shodan.io/"+encodeURIComponent(indicator))))}
+  if(domain){jobs.push(get("RDAP",()=>fetchJson("https://rdap.org/domain/"+encodeURIComponent(indicator))));for(const [type,label] of [[1,"A"],[15,"MX"],[16,"TXT/SPF"],[2,"NS"]])jobs.push(get("DNS "+label,()=>fetchJson("https://cloudflare-dns.com/dns-query?name="+encodeURIComponent(indicator)+"&type="+type,{Accept:"application/dns-json"})))}
+  const vtKey=$("#psv-vt-key")?.value.trim(),abuseKey=$("#psv-abuse-key")?.value.trim();
+  if(vtKey)jobs.push(get("VirusTotal",()=>fetchJson("https://www.virustotal.com/api/v3/"+(hash?"files/":isIp?"ip_addresses/":"domains/")+encodeURIComponent(indicator),{"x-apikey":vtKey})));
+  if(abuseKey&&ip4)jobs.push(get("AbuseIPDB",()=>fetchJson("https://api.abuseipdb.com/api/v2/check?ipAddress="+encodeURIComponent(indicator)+"&maxAgeInDays=90",{Key:abuseKey,Accept:"application/json"})));
+  const results=await Promise.all(jobs),find=label=>results.find(r=>r.label===label&&r.data)?.data,geo=find("IP geolocation")||{},rdap=find("RDAP")||{},shodan=find("Shodan InternetDB")||{};
+  const vtResult=results.find(r=>r.label==="VirusTotal"&&r.data)?.data,vtStats=vtResult?.data?.attributes?.last_analysis_stats||{},vtBad=Number(vtStats.malicious||0)+Number(vtStats.suspicious||0);
+  const abuse=find("AbuseIPDB")?.data,abuseScore=Number(abuse?.abuseConfidenceScore||0),ports=Array.isArray(shodan.ports)?shodan.ports:[],cves=Array.isArray(shodan.vulns)?shodan.vulns:[];
+  const score=Math.min(100,Math.round(Math.min(25,ports.length*4)+Math.min(40,cves.length*8)+Math.min(30,vtBad*5)+Math.min(30,abuseScore*.3)));
+  const verdict=score>=65?"Malicious":score>=30?"Suspicious":"Clean / low signal",color=score>=65?"#ef4444":score>=30?"#f59e0b":"#22c55e";
+  const external='<div class="psv-intel-corner-links"><a target="_blank" rel="noopener noreferrer" href="https://www.virustotal.com/gui/search/'+encodeURIComponent(indicator)+'">↗ VirusTotal</a><a target="_blank" rel="noopener noreferrer" href="https://www.abuseipdb.com/check/'+encodeURIComponent(indicator)+'">↗ AbuseIPDB</a><a target="_blank" rel="noopener noreferrer" href="https://www.shodan.io/search?query='+encodeURIComponent(indicator)+'">↗ Shodan</a></div>';
+  const banner='<section class="psv-intel-banner"><div class="psv-risk-gauge" style="--risk:'+score+';--psv-risk-color:'+color+'"><strong>'+score+'</strong></div><div><div class="psv-eyebrow">UNIFIED VERDICT · '+(isIp?"IP ADDRESS":domain?"DOMAIN":"FILE HASH")+'</div><h3 style="margin:0 0 6px;color:var(--psv-text)">'+verdict+'</h3><p class="psv-intel-note">Heuristic score based only on returned port, CVE and reputation signals. Missing data is not evidence of safety.</p></div>'+external+'</section>';
+  const entities=Array.isArray(rdap.entities)?rdap.entities:[],emails=entities.flatMap(e=>e.vcardArray?.[1]||[]).filter(v=>/email/i.test(v[0])).map(v=>v[3]).filter(Boolean);
+  const network=isIp?{IP:indicator,ASN:geo.connection?.asn,ISP:geo.connection?.isp,Organization:geo.connection?.org,Country:geo.country,Region:geo.region,City:geo.city,CIDR:(rdap.cidr0_cidrs||[]).map(x=>x.v4prefix||x.v6prefix).filter(Boolean).join(", ")||(rdap.startAddress&&rdap.endAddress?rdap.startAddress+" – "+rdap.endAddress:undefined),"Abuse contact":emails.join(", ")||"Not exposed by public RDAP"}:domain?{Domain:indicator,Registrar:entities.map(e=>e.handle).filter(Boolean).join(", "),Status:Array.isArray(rdap.status)?rdap.status.join(", "):undefined,Nameservers:(rdap.nameservers||[]).map(n=>n.ldhName).filter(Boolean).join(", "),Handle:rdap.handle}:{Hash:indicator,Type:indicator.length===32?"MD5":indicator.length===40?"SHA-1":"SHA-256","VirusTotal malicious/suspicious":vtBad};
+  const net=card("Network, Geo & ASN Ownership",kv(network));
+  const hostnames=(shodan.hostnames||[]).join(", "),cpes=(shodan.cpes||[]).join(", ");
+  const attack=card("Attack Surface, Open Ports & CVEs",'<p class="psv-intel-note">Shodan InternetDB supplies IP-focused results. Empty results do not mean the host is safe.</p>'+table(["Port","Protocol / signal","Hostnames","CVE IDs"],ports.map(p=>[p,"Reported open",hostnames,cves.join(", ")||"None reported"]))+'<p class="psv-intel-note">CPEs: '+esc(cpes||"Not reported")+'</p>');
+  const dnsRows=results.filter(r=>r.label.startsWith("DNS ")).flatMap(r=>(r.data?.Answer||[]).map(a=>[r.label,a.name,a.TTL,a.data]));
+  const rep=[["VirusTotal",vtResult?"Response received":vtKey?"No data / provider error":"No key supplied",JSON.stringify(vtStats)],["AbuseIPDB",abuse?"Confidence "+abuseScore+"%":abuseKey?"No data / not an IPv4 query":"No key supplied",abuse?.totalReports??"—"],["Shodan",results.some(r=>r.label==="Shodan InternetDB"&&r.data)?"Response received":"Unavailable / not applicable",cves.join(", ")||"No CVEs reported"]];
+  const dns=card("DNS, SSL & Reputation Matrix",table(["Source / record","Name / signal","TTL / score","Value / details"],dnsRows.concat(rep))+'<p class="psv-intel-note">The requested DNS JSON endpoint does not provide SSL certificate data, so this dashboard does not claim to assess SSL.</p>');
+  const errors=results.filter(r=>r.error).map(r=>[r.label,r.error,"—","CORS, rate limit, invalid/unavailable indicator, or provider error"]);
+  report.innerHTML=banner+net+attack+dns+(errors.length?card("Provider status & limitations",table(["Provider","Error","Details","Possible cause"],errors)):"")+'<p class="psv-intel-note">Public-source enrichment is best-effort. A clean/low-signal result is not a guarantee of benign activity. API keys are held only in the page memory and sent directly to the provider.</p>';
+ };
+ button?.addEventListener("click",e=>{e.preventDefault();e.stopImmediatePropagation();run().catch(err=>report.textContent="Analysis failed: "+err.message)},true);
+ input.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();run().catch(err=>report.textContent=err.message)}});
+}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
+if(window.document$?.subscribe)window.document$.subscribe(()=>init());
+})();
