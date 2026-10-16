@@ -69,3 +69,6 @@ body,.md-container,.md-main,.md-main__inner,.md-content,.md-content__inner{backg
 .psv-app-footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin:24px 0 8px;padding:12px 0;border-top:1px solid var(--psv-border);color:var(--psv-muted);font-size:11px}
 @media(max-width:900px){.psv-app-layout{grid-template-columns:1fr}.psv-tool-rail{position:static;max-height:none}.psv-tool-rail .psv-tool-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.psv-intel-banner{grid-template-columns:80px minmax(0,1fr)}.psv-intel-corner-links{grid-column:1/-1;justify-content:flex-start}}
 @media(max-width:560px){.md-grid{width:96%!important}.psv-tool-rail .psv-tool-grid{grid-template-columns:1fr}.psv-intel-kv,.psv-intel-key-row{grid-template-columns:1fr}.psv-intel-banner{grid-template-columns:1fr}}
+
+/* Keep the initial workspace close to the first viewport. */
+.psv-hero{padding:20px 0 18px;max-width:none}.psv-hero h1{font-size:clamp(1.8rem,4vw,3rem);margin-bottom:10px}.psv-hero p{margin:0;max-width:900px}.psv-hero-stats{margin-top:12px}
