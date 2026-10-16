@@ -30,6 +30,7 @@ theme:
     - content.code.copy
     - content.action.view
 extra_css:
+  - assets/css/psv-tools.css
   - stylesheets/extra.css
   - stylesheets/tools.css
 extra_javascript:
