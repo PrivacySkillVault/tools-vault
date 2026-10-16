@@ -281,6 +281,7 @@ function init(){
  $("#psv-search",app)?.addEventListener("input",e=>{const q=e.target.value.toLowerCase();$$(".psv-tool-card",grid).forEach(b=>b.hidden=!b.textContent.toLowerCase().includes(q))});
  const admonitions=$$(".md-typeset .admonition");admonitions.forEach(e=>{if(/Privacy-first by default|Operational use/i.test(e.textContent))e.remove()});
  installIntel($("#panel-intel",workspace));
+ const first=$("#panel-ioc",workspace); if(first){first.hidden=false;empty.hidden=true;}
 }
 function installIntel(panel){
  const input=$("#intel-indicator",panel),links=$("#intel-links",panel);if(!input||!links||panel.dataset.psvUnifiedIntel==="1")return;panel.dataset.psvUnifiedIntel="1";
