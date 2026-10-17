@@ -59,7 +59,7 @@ cvss:S("cv-av","Attack Vector",[["N","Network (N)"],["A","Adjacent (A)"],["L","L
 };
 var app=$("#psv-tools-app");if(!app)return;
 app.innerHTML='<div class="psv-console"><header class="psv-hero"><div class="psv-eyebrow">SECURITY OPERATIONS WORKBENCH</div><h1>Analyze. Detect.<br><span>Investigate.</span></h1><p>The Tools section brings together practical SOC utilities, indicator enrichment, log decoders, and detection engineering workbenches used to turn raw telemetry into actionable security investigations.</p></header><div class="psv-search-wrap"><input id="psv-search" type="search" placeholder="Search tools, workflows, indicators…" aria-label="Search tools"><span class="psv-shortcut">FILTER</span></div><nav id="psv-tool-grid" class="psv-tool-grid" aria-label="Available tools">'+defs.map(function(t,i){return '<button class="psv-tool-card" data-tool="'+t[0]+'"><span class="psv-tool-index">'+String(i+1).padStart(2,"0")+'</span><span class="psv-tool-title">'+t[1]+'</span><span class="psv-tool-desc">'+t[2]+'</span><span class="psv-tool-open">Open workspace ↗</span></button>'}).join("")+'</nav><div id="psv-workspace">'+defs.map(function(t){return panel(t[0],t[1],t[2],bodies[t[0]])}).join("")+'</div><div id="psv-toast" class="psv-toast" role="status"></div></div>';
-var get=function(id){return ($("#"+id)?.value||"").trim()}, out=function(s){var e=$("#out");if(e)e.textContent=s}, toast=function(s){var e=$("#psv-toast");e.textContent=s;e.classList.add("show");setTimeout(function(){e.classList.remove("show")},2200)};
+var activeToolId="ioc"; var get=function(id){return ($("#"+id)?.value||"").trim()}, out=function(s){var e=$("#panel-"+activeToolId+" #out");if(!e)e=$("#out");if(e)e.textContent=s}, toast=function(s){var e=$("#psv-toast");e.textContent=s;e.classList.add("show");setTimeout(function(){e.classList.remove("show")},2200)};
 var back=function(){$$(".psv-tool-panel").forEach(function(p){p.hidden=true});$("#psv-tool-grid").hidden=false;$(".psv-search-wrap").hidden=false};
 var show=function(id){$("#psv-tool-grid").hidden=true;$(".psv-search-wrap").hidden=true;$$(".psv-tool-panel").forEach(function(p){p.hidden=p.id!=="panel-"+id});if(id==="events")renderEvents();window.scrollTo({top:0,behavior:"smooth"})};
 function renderEvents(){var q=get("event-search").toLowerCase(),rows=events.filter(function(e){return e.join(" ").toLowerCase().includes(q)});$("#event-results").innerHTML=rows.map(function(e){return '<article class="psv-event-row"><div class="psv-event-id">'+esc(e[0])+'</div><div><b>'+esc(e[2])+'</b><small>'+esc(e[1])+'</small><p>'+esc(e[3])+'</p></div></article>'}).join("")||'<p class="psv-note">No entries found.</p>'}
@@ -74,6 +74,7 @@ score=Math.ceil(score*10)/10;var rating=score===0?"None":score<4?"Low":score<7?"
 out("CVSS v3.1 Base Score: "+score.toFixed(1)+" ("+rating+")\nVector: "+vector+"\n\nBase metrics only. Confirm using the official FIRST calculator before publishing.")
 }
 function run(id,action){
+activeToolId=id;
 try{
 if(action==="back"){back();return}if(action==="clear"){$$("textarea",$("#panel-"+id)).forEach(function(e){e.value=""});out("Cleared.");return}
 if(id==="ioc"){
@@ -372,4 +373,46 @@ function init(){
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
 if(window.document$?.subscribe)window.document$.subscribe(init);
+})();
+/* Public controller and delegated, per-panel output handling. */
+(function(){
+"use strict";
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+const samples={
+ioc:{"ioc-input":"Failed logon source=203.0.113.42 domain=example.org URL=https://example.org/login SHA256=0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef hxxps://malicious[.]example/path"},
+intel:{"intel-indicator":"8.8.8.8"},
+email:{"email-input":"From: security@example.org\nReply-To: attacker@example.net\nReturn-Path: <bounce@example.org>\nDate: Sat, 17 Oct 2026 12:00:00 +0300\nSubject: Suspicious sign-in alert\nReceived: from relay.example.net (relay.example.net [203.0.113.42]) by mx.example.org; Sat, 17 Oct 2026 09:00:01 +0000\nReceived: from workstation.example.org ([198.51.100.25]) by relay.example.net; Sat, 17 Oct 2026 09:00:00 +0000\nAuthentication-Results: mx.example.org; spf=fail; dkim=none; dmarc=fail"},
+siem:{"siem-kind":"sigma","siem-fields":"title: Suspicious PowerShell\nlogsource:\n  product: windows\ndetection:\n  selection:\n    EventID: 4688\n    CommandLine|contains: -enc\n  condition: selection"},
+events:{"event-search":"4625"},regex:{"regex-pattern":"failed.*logon","regex-flags":"gi","regex-text":"Failed logon user=alice src=203.0.113.42\nSuccessful logon user=bob"},
+yara:{"yara-name":"Suspicious_PE_Sample","yara-strings":"MZ\nThis program cannot be run in DOS mode","yara-condition":"any"},
+deob:{"deob-input":"SW52b2tlLUV4cHJlc3Npb24gKE5ldy1PYmplY3QgTmV0LldlYkNsaWVudCkuRG93bmxvYWRTdHJpbmcoJ2h0dHBzOi8vZXhhbXBsZS5vcmcvYScp","deob-mode":"base64"},
+json:{"json-input":'{"event":{"id":4625,"provider":"Microsoft-Windows-Security-Auditing"},"source":{"ip":"203.0.113.42"},"user":{"name":"alice"}}'},
+time:{"time-input":"2026-10-17T09:30:00Z","time-zone":"Asia/Riyadh"},
+severity:{"sev-impact":"2","sev-scope":"1","sev-confidence":"2","sev-exposure":"2"},
+report:{"rep-id":"INC-DEMO-001","rep-title":"Suspicious authentication activity","rep-date":"2026-10-17T12:30:00+03:00","rep-sev":"High","rep-summary":"Repeated failed logons observed from a test source.","rep-evidence":"Event ID 4625; source 203.0.113.42.","rep-actions":"Validate account ownership and preserve relevant logs."},
+cvss:{"cv-av":"N","cv-ac":"L","cv-pr":"N","cv-ui":"N","cv-s":"U","cv-c":"H","cv-i":"H","cv-a":"H"}
+};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function render(id){
+ const p=$("#panel-"+id);if(!p)return false;
+ Object.entries(samples[id]||{}).forEach(([k,v])=>{const e=$("#"+k,p);if(e)e.value=v});
+ if(id==="events"){const q=$("#event-search",p),host=$("#event-results",p);if(q)q.dispatchEvent(new Event("input",{bubbles:true}));if(host&&host.innerHTML.length>20){const o=$("#out",p);if(o)o.innerHTML=host.innerHTML}}
+ if(id==="intel"){
+  const report=$("#psv-unified-intel-report",p);
+  if(report)report.innerHTML='<section class="psv-intel-banner"><h3>Risk score: unavailable — no live verdict</h3><p>Sample indicator: 8.8.8.8. Network lookups are best-effort; no reputation is inferred from missing results.</p></section><section class="psv-intel-card"><h3>Network / RDAP</h3><p>Live provider data unavailable or pending.</p><a href="https://rdap.org/ip/8.8.8.8" target="_blank" rel="noopener">Open RDAP</a></section><section class="psv-intel-card"><h3>Shodan ports / CVEs</h3><p>No live results asserted.</p><a href="https://internetdb.shodan.io/8.8.8.8" target="_blank" rel="noopener">Open InternetDB</a></section><section class="psv-intel-card"><h3>DNS / reputation</h3><p>Use provider links for current results.</p><a href="https://www.virustotal.com/gui/ip-address/8.8.8.8" target="_blank" rel="noopener">Open VirusTotal</a></section>';
+ }
+ if(typeof run==="function"&&id!=="events")run(id,"run");
+ const o=$("#out",p);if(o){o.hidden=false;o.style.display="block";o.style.visibility="visible";if(o.innerHTML.trim().length<50)o.innerHTML='<h3>'+esc(({ioc:"Indicator extraction",intel:"Threat intelligence",email:"Email header analysis",siem:"SIEM query translation",events:"Windows Event ID 4625",regex:"Regex matches",yara:"YARA rule",deob:"Safe decoding",json:"Formatted JSON",time:"Timestamp conversion",severity:"Incident severity",report:"Incident report",cvss:"CVSS v3.1 score"})[id]||"Tool output")+'</h3><p>Sample input loaded for '+esc(id)+'.</p><pre>'+esc(Object.values(samples[id]||{})[0]||"")+'</pre>'}
+ return true;
+}
+function open(id){if(!samples[id])return;const p=$("#panel-"+id);if(!p)return;if(typeof show==="function")show(id);$$(".psv-tool-panel").forEach(x=>x.hidden=x!==p);p.hidden=false;render(id)}
+window.PSVTools={openTool:open,loadSample:render,runTool:id=>{if(typeof run==="function")run(id,"run")},toolIds:Object.keys(samples)};
+document.addEventListener("click",e=>{
+ const card=e.target.closest("#psv-tool-grid [data-tool],#psv-tool-grid [data-tool-id]");
+ if(card){e.preventDefault();e.stopImmediatePropagation();open(card.dataset.toolId||card.dataset.tool);return}
+ const b=e.target.closest("button[data-psv-sample]");
+ if(b){const p=b.closest(".psv-tool-panel");if(p){e.preventDefault();e.stopImmediatePropagation();render(p.id.replace("panel-",""))}}
+},true);
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>open("ioc"),{once:true});else open("ioc");
+if(window.document$?.subscribe)window.document$.subscribe(()=>{if($("#psv-tools-app"))open("ioc")});
 })();
