@@ -1,3 +1,3 @@
 # Security Tools
 
-<div id="psv-tools-app"></div>
+<div id="psv-workbench-root"></div>
