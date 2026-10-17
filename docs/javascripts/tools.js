@@ -1221,7 +1221,7 @@ CONTAINMENT::Isolated both endpoints in EDR; revoked Kerberos TGTs; blocked C2 I
       const name = ((input.match(/RULE_NAME::(\S+)/i) || [])[1] || "SOC_Custom_Rule").replace(/[^a-zA-Z0-9_]/g, "_");
       const author = ((input.match(/META_AUTHOR::(.+)/i) || [])[1] || "SOC Analyst").trim();
       const sev = ((input.match(/META_SEVERITY::(.+)/i) || [])[1] || "High").trim();
-      const stringsRaw = ((input.match(/STRINGS::([\s\S]*?)(?=CONDITION::|$)/i) \vert{}\vert{} [])[1] \vert{}\vert{} '$s1 = "suspicious" ascii').trim();
+      const stringsRaw = ((input.match(/STRINGS::([\s\S]*?)(?=CONDITION::|$)/i) || [])[1] || '$s1 = "suspicious" ascii').trim();
       const condRaw = ((input.match(/CONDITION::([\s\S]*)$/i) || [])[1] || "uint16(0) == 0x5A4D and any of them").trim();
 
       const definedVars = Array.from(stringsRaw.matchAll(/(\$[A-Za-z0-9_]+)\s*=/g)).map(m => m[1]);
