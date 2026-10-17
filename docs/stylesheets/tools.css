@@ -1,6 +1,6 @@
 /* Privacy Skill Vault — Tools command-center layer */
-#psv-tools-app{--t-bg:#070b14;--t-surface:#0b1220;--t-raised:#111a2b;--t-border:#243149;--t-text:#e8eef8;--t-muted:#9aa8bc;--t-blue:#3b82f6;--t-cyan:#3b82f6;color:var(--t-text)}
-[data-md-color-scheme="default"] #psv-tools-app{--t-bg:#f5f7fb;--t-surface:#fff;--t-raised:#edf2f8;--t-border:#d6dfeb;--t-text:#111827;--t-muted:#596579;--t-blue:#2563eb;--t-cyan:#2563eb}
+#psv-tools-app{--t-bg:#070b14;--t-surface:#0b1220;--t-raised:#111a2b;--t-border:#243149;--t-text:#e8eef8;--t-muted:#9aa8bc;--t-blue:#3b82f6;--t-cyan:#22d3ee;color:var(--t-text)}
+[data-md-color-scheme="default"] #psv-tools-app{--t-bg:#f5f7fb;--t-surface:#fff;--t-raised:#edf2f8;--t-border:#d6dfeb;--t-text:#111827;--t-muted:#596579;--t-blue:#1d4ed8;--t-cyan:#0e7490}
 .psv-console{background:var(--t-bg);border:1px solid var(--t-border);border-radius:18px;overflow:hidden;padding:clamp(16px,3vw,32px);box-shadow:0 16px 60px #0002;color:var(--t-text)}
 .psv-console-top{display:flex;align-items:center;gap:9px;font:600 11px var(--psv-font-mono);letter-spacing:.09em;color:var(--t-muted);border-bottom:1px solid var(--t-border);padding-bottom:14px}.psv-live-dot{width:8px;height:8px;border-radius:50%;background:#34d399;box-shadow:0 0 12px #34d399}.psv-console-spacer{flex:1}
 .psv-theme-btn{border:1px solid var(--t-border);border-radius:8px;padding:7px 10px;background:var(--t-raised);color:var(--t-text);cursor:pointer;font-size:12px}
@@ -42,23 +42,29 @@
 @media(max-width:720px){.psv-editor-split{grid-template-columns:minmax(0,1fr)}.psv-tool-panel{padding:14px}}
 @media(prefers-reduced-motion:reduce){.psv-tool-panel *{scroll-behavior:auto!important;transition:none!important}}
 
-/* Royal-blue workbench polish and unclipped tool rail */
+
+/* Definitive PSV workbench layout and brand palette overrides */
 #psv-tools-app{--t-blue:#3b82f6;--t-cyan:#3b82f6}
 [data-md-color-scheme="default"] #psv-tools-app{--t-blue:#2563eb;--t-cyan:#2563eb}
-.psv-console-top,.psv-hero-stats,.psv-footnote,.psv-app-footer{display:none!important}
-.psv-hero{max-width:900px;padding:clamp(28px,5vw,56px) 0 30px}
-.psv-eyebrow{font-family:var(--psv-font-mono,ui-monospace,monospace);font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#2563eb}
-[data-md-color-scheme="slate"] .psv-hero .psv-eyebrow{color:#3b82f6}
-.psv-hero h1{font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:800;line-height:1.08;letter-spacing:-.03em;color:#0f172a;margin:.65rem 0 1rem}
-[data-md-color-scheme="slate"] .psv-hero h1{color:#f8fafc}
-.psv-hero h1 span{color:#2563eb}
-[data-md-color-scheme="slate"] .psv-hero h1 span{color:#3b82f6}
-.psv-hero p{max-width:680px;font-size:1.1rem;line-height:1.6;color:#475569}
-[data-md-color-scheme="slate"] .psv-hero p{color:#94a3b8}
-.psv-tool-index,.psv-tool-open,.psv-tool-card.is-active .psv-tool-index{color:var(--t-blue)!important}
-.psv-tool-card.is-active,.psv-btn:focus-visible,.psv-tool-card:focus-visible{border-color:var(--t-blue)!important;outline-color:var(--t-blue)}
-.psv-tool-rail{max-height:none!important;overflow:visible!important;align-self:start;padding:0 4px 20px 0}
-.psv-tool-grid{max-height:none!important;overflow:visible!important}
-.psv-workspace-empty{display:none!important}
-#psv-tools-app .psv-output{display:block!important;visibility:visible!important;min-height:5rem;white-space:pre-wrap;overflow-wrap:anywhere}
-#psv-tools-app .psv-intel-dashboard,#psv-tools-app #intel-links{display:block;visibility:visible;min-width:0}
+.psv-hero .psv-eyebrow{color:#3b82f6;font-family:var(--psv-font-mono,ui-monospace,monospace);font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+[data-md-color-scheme="default"] .psv-hero .psv-eyebrow{color:#2563eb}
+.psv-hero h1{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:800;line-height:1.08;letter-spacing:-.03em}
+.psv-hero h1 span{color:#3b82f6!important}
+[data-md-color-scheme="default"] .psv-hero h1{color:#0f172a}
+[data-md-color-scheme="default"] .psv-hero h1 span{color:#2563eb!important}
+.psv-hero p{max-width:680px;font-size:1.1rem;line-height:1.6;color:#94a3b8}
+[data-md-color-scheme="default"] .psv-hero p{color:#475569}
+.psv-app-layout{display:grid;grid-template-columns:minmax(245px,290px) minmax(0,1fr);gap:22px;align-items:start;margin-top:20px}
+.psv-tool-rail{position:sticky;top:16px;max-height:calc(100vh - 32px);overflow-y:auto;overscroll-behavior:contain;padding:12px;border:1px solid var(--psv-border);border-radius:14px;background:var(--psv-card-bg)}
+.psv-tool-rail .psv-tool-grid{display:flex;flex-direction:column;gap:6px}
+.psv-tool-rail .psv-tool-card{display:grid;grid-template-columns:28px minmax(0,1fr);gap:3px 8px;min-height:0;padding:10px;border-color:var(--psv-border)}
+.psv-tool-rail .psv-tool-index,.psv-tool-rail .psv-tool-open{color:var(--t-blue)}
+.psv-tool-rail .psv-tool-card.is-active{border-color:var(--t-blue);box-shadow:inset 3px 0 var(--t-blue)}
+.psv-workspace-main,#psv-workspace{min-width:0}
+.psv-tool-panel[hidden]{display:none!important}
+.psv-workspace-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}
+.psv-btn-sample{background:transparent!important;color:var(--t-blue)!important;border-color:var(--t-blue)!important}
+.psv-btn-clear{background:transparent!important;color:var(--t-muted)!important;border-color:var(--t-border)!important}
+.psv-console-top,.psv-hero-stats,.psv-footnote,.psv-app-footer,.md-typeset .admonition{display:none!important}
+@media(max-width:900px){.psv-app-layout{grid-template-columns:1fr}.psv-tool-rail{position:static;max-height:none}.psv-tool-rail .psv-tool-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.psv-tool-rail .psv-tool-grid{grid-template-columns:1fr}}
