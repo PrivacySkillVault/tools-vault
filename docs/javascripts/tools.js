@@ -406,8 +406,18 @@ function render(id){
  return true;
 }
 function open(id){if(!samples[id])return;const p=$("#panel-"+id);if(!p)return;if(typeof show==="function")show(id);$$(".psv-tool-panel").forEach(x=>x.hidden=x!==p);p.hidden=false;render(id)}
-window.PSVTools={openTool:open,loadSample:render,runTool:id=>{if(typeof run==="function")run(id,"run")},toolIds:Object.keys(samples)};
+function ensureSampleIfEmpty(id){
+ const panel=$("#panel-"+id);if(!panel)return;
+ const keys=Object.keys(samples[id]||{});
+ const input=keys.map(k=>$("#"+k,panel)).find(el=>el&&/^(INPUT|TEXTAREA)$/.test(el.tagName));
+ if(input&&!String(input.value||"").trim()){
+  Object.entries(samples[id]||{}).forEach(([k,v])=>{const el=$("#"+k,panel);if(el)el.value=v});
+ }
+}
+window.PSVTools={openTool:open,loadSample:render,runTool:id=>{ensureSampleIfEmpty(id);if(typeof run==="function")run(id,"run")},toolIds:Object.keys(samples)};
 document.addEventListener("click",e=>{
+ const action=e.target.closest(".psv-tool-panel button[data-action='run']");
+ if(action){const panel=action.closest(".psv-tool-panel");if(panel){const id=panel.id.replace("panel-","");ensureSampleIfEmpty(id)}}
  const card=e.target.closest("#psv-tool-grid [data-tool],#psv-tool-grid [data-tool-id]");
  if(card){e.preventDefault();e.stopImmediatePropagation();open(card.dataset.toolId||card.dataset.tool);return}
  const b=e.target.closest("button[data-psv-sample]");
